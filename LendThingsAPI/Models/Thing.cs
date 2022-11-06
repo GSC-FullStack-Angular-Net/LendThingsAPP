@@ -6,15 +6,16 @@
         {
         }
 
-        public Thing(string description, DateOnly creationDate, Category? category)
+        public Thing(int idThing, string description,  Category? category)
         {
+            Id = idThing;
             Description = description;
-            CreationDate = creationDate;
             Category = category;
         }
 
+        public int Id { get; set; }
         public string Description {get; set;}
-        public DateOnly CreationDate { get; } = new DateOnly();
+        public DateTime CreationDate { get; } = new DateTime();
 
         public Category? Category { get; set; }
     }
