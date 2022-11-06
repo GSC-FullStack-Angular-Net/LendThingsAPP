@@ -1,6 +1,6 @@
 ﻿namespace LendThingsAPI.Models
 {
-    public class Loan
+    public class Loan: BaseEntity
     {
         public Loan()
         {
@@ -14,7 +14,6 @@
             Person = person;
         }
 
-        public int Id { get; set; }
         public DateTime Date { get; set; } = DateTime.UtcNow;
         public DateTime ReturnDate { get; set; }
         public Thing? Thing { get; set; }

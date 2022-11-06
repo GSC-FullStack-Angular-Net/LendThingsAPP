@@ -1,6 +1,6 @@
 ﻿namespace LendThingsAPI.Models
 {
-    public class Thing
+    public class Thing:BaseEntity
     {
         public Thing()
         {
@@ -13,7 +13,6 @@
             Category = category;
         }
 
-        public int Id { get; set; }
         public string Description {get; set;}
         public DateTime CreationDate { get; } = new DateTime();
 
