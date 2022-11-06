@@ -5,9 +5,9 @@ namespace LendThingsAPI.DataAccess
 {
     public class LendThingsContext:DbContext
     {
+        
         public LendThingsContext(DbContextOptions options) : base(options)
         {
-            
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) 
