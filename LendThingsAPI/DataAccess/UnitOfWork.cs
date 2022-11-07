@@ -5,7 +5,7 @@ namespace LendThingsAPI.DataAccess
     public class UnitOfWork : IUnitOfWork
     {
         private readonly LendThingsContext context;
-        public CategoryRepository CategoryRepository { get; private set; }
+        public ICategoryRepository CategoryRepository { get; private set; }
 
         public LoanRepository LoanRepository { get; private set; }
 
