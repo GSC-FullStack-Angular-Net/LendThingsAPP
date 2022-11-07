@@ -24,9 +24,9 @@ namespace LendThingsAPI.Controllers
                || string.IsNullOrWhiteSpace(category.Description))
                 return BadRequest("Description is mandatory");
 
-            if(uow.CategoryRepository.GetAll().First(c=>c.Description==category.Description) is not null)
+            if(uow.CategoryRepository.GetAll().FirstOrDefault(c=>c.Description==category.Description) is not null)
             {
-                return BadRequest($"The Category: ${category.Description} is created already.");
+                return BadRequest($"The Category: {category.Description} is created already.");
             }
             
             Category newCategory = new Category() { Description = category.Description};
@@ -34,7 +34,7 @@ namespace LendThingsAPI.Controllers
 
             uow.CompleteAsync();
 
-            return Created(this.Request.Path.Value, newCategory);
+            return Created("api/Category/Create", newCategory);
         }
     }
 }

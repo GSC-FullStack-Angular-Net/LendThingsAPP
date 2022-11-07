@@ -4,7 +4,7 @@ namespace LendThingsAPI.DataAccess
 {
     public interface IUnitOfWork
     {
-        CategoryRepository CategoryRepository { get; }
+        ICategoryRepository CategoryRepository { get; }
         LoanRepository LoanRepository { get; }
         PersonRepository PersonRepository { get; }
         ThingRepository ThingRepository { get; }
