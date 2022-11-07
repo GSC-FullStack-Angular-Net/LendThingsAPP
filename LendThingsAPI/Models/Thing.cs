@@ -14,7 +14,7 @@
         }
 
         public string Description {get; set;}
-        public DateTime CreationDate { get; } = new DateTime();
+        public DateTime CreationDate { get; } = DateTime.UtcNow;
 
         public Category? Category { get; set; }
     }
