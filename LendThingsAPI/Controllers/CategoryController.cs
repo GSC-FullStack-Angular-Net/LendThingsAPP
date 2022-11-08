@@ -1,4 +1,5 @@
-﻿using LendThingsAPI.DataAccess;
+﻿using AutoMapper;
+using LendThingsAPI.DataAccess;
 using LendThingsAPI.DTO;
 using LendThingsAPI.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -11,11 +12,14 @@ namespace LendThingsAPI.Controllers
     [Route("api/[controller]")]
     public class CategoryController : ControllerBase
     {
-        private IUnitOfWork uow;
-        public CategoryController(IUnitOfWork uow)
+        private IUnitOfWork uow { get; }
+        public IMapper Mapper { get; }
+        public CategoryController(IUnitOfWork uow, IMapper mapper)
         {
             this.uow = uow;
+            Mapper = mapper;
         }
+
 
         [HttpPost()]
         [Route("create")]
@@ -26,8 +30,8 @@ namespace LendThingsAPI.Controllers
             {
                 return BadRequest($"The Category: {category.Description} is created already.");
             }
-            
-            Category newCategory = new Category() { Description = category.Description};
+
+            Category newCategory = Mapper.Map<Category>(category);
             newCategory = uow.CategoryRepository.Add(newCategory);
 
             uow.CompleteAsync();
