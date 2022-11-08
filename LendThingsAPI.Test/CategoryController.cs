@@ -75,7 +75,7 @@ namespace LendThingsAPI.Test
 
 
         [Fact]
-        public void Create_Returns_Entity_On_Successful_Request()
+        public void Create_Returns_Created_On_Successful_Request()
         {
             //Arrange
             var testCategoryDTO = new CategoryForCreationDTO() { Description = "Kitchen" };
@@ -99,6 +99,7 @@ namespace LendThingsAPI.Test
             //Assert
             Assert.Equal("api/Category/Create", result.Location);
             Assert.Equal(201, result.StatusCode);
+            
         }
     }
 }
