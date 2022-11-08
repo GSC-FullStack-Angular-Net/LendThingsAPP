@@ -1,3 +1,4 @@
+using AutoMapper;
 using LendThingsAPI.DataAccess;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,6 +11,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<LendThingsContext>();
 builder.Services.AddScoped<IUnitOfWork,UnitOfWork>();
+
+//AutoMapper
+builder.Services.AddAutoMapper(typeof(Program));
 
 var app = builder.Build();
 
