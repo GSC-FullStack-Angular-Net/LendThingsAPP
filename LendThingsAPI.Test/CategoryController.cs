@@ -19,31 +19,33 @@ namespace LendThingsAPI.Test
         {
         }
 
-        [Fact]
-        public void Create_Returns_BadRequest_On_Request_Without_Body()
-        {
-            //Arrange
-            var blankCategoryDTO = new CategoryForCreationDTO();
+        //Esto lo hace automaticamente el Framework
+        //[Fact]
+        //public void Create_Returns_BadRequest_On_Request_Without_Body()
+        //{
+        //    //Arrange
+        //    var blankCategoryDTO = new CategoryForCreationDTO();
 
-            var expectedReturn = new List<Category>() {
-                new Category { Id = 1, Description = "Machinery" }, 
-                new Category { Id = 2, Description = "School" }, 
-                new Category { Id = 3, Description = "Computer" } 
-            };
-            var mockCategoryRepo = new Mock<ICategoryRepository>();
-            mockCategoryRepo.Setup(m => m.GetAll()).Returns(expectedReturn);
+        //    var expectedReturn = new List<Category>() {
+        //        new Category { Id = 1, Description = "Machinery" }, 
+        //        new Category { Id = 2, Description = "School" }, 
+        //        new Category { Id = 3, Description = "Computer" } 
+        //    };
+        //    var mockCategoryRepo = new Mock<ICategoryRepository>();
+        //    mockCategoryRepo.Setup(m => m.GetAll()).Returns(expectedReturn);
 
-            var mockUnitOfWork = new Mock<IUnitOfWork>();
-            mockUnitOfWork.Setup(m => m.CategoryRepository).Returns(mockCategoryRepo.Object);
+        //    var mockUnitOfWork = new Mock<IUnitOfWork>();
+        //    mockUnitOfWork.Setup(m => m.CategoryRepository).Returns(mockCategoryRepo.Object);
 
-            var sut = new CategoryController(mockUnitOfWork.Object);
+        //    var sut = new CategoryController(mockUnitOfWork.Object);
 
-            //Act
-            var result = (BadRequestObjectResult)sut.Create(blankCategoryDTO);
-            //Assert
-            Assert.Equal("Description is mandatory",result.Value);
-            Assert.Equal(400, result.StatusCode);
-        }
+        //    //Act
+        //    var result = (BadRequestObjectResult)sut.Create(blankCategoryDTO);
+        //    //Assert
+        //    Assert.Equal("Description is mandatory",result.Value);
+        //    Assert.Equal(400, result.StatusCode);
+        //}
+
 
         [Fact]
         public void Create_Returns_BadRequest_On_Repeated_Description()

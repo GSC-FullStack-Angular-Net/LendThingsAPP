@@ -7,7 +7,7 @@ using System.Runtime.CompilerServices;
 
 namespace LendThingsAPI.Controllers
 {
-
+    [ApiController]
     [Route("api/[controller]")]
     public class CategoryController : ControllerBase
     {
@@ -18,11 +18,9 @@ namespace LendThingsAPI.Controllers
         }
 
         [HttpPost()]
+        [Route("create")]
         public IActionResult Create([FromBody] CategoryForCreationDTO category)
         {
-            if (category is null
-               || string.IsNullOrWhiteSpace(category.Description))
-                return BadRequest("Description is mandatory");
 
             if(uow.CategoryRepository.GetAll().FirstOrDefault(c=>c.Description==category.Description) is not null)
             {
