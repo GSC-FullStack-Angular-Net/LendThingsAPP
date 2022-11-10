@@ -12,11 +12,11 @@ namespace LendThingsAPI.Controllers
     [Route("api/[controller]")]
     public class CategoryController : ControllerBase
     {
-        private IUnitOfWork uow { get; }
+        private IUnitOfWork UoW { get; }
         public IMapper Mapper { get; }
         public CategoryController(IUnitOfWork uow, IMapper mapper)
         {
-            this.uow = uow;
+            UoW = uow;
             Mapper = mapper;
         }
 
@@ -26,15 +26,15 @@ namespace LendThingsAPI.Controllers
         public IActionResult Create([FromBody] CategoryForCreationDTO category)
         {
 
-            if(uow.CategoryRepository.GetAll().FirstOrDefault(c=>c.Description==category.Description) is not null)
+            if(UoW.CategoryRepository.GetAll().FirstOrDefault(c=>c.Description==category.Description) is not null)
             {
                 return BadRequest($"The Category: {category.Description} is created already.");
             }
 
             Category newCategory = Mapper.Map<Category>(category);
-            newCategory = uow.CategoryRepository.Add(newCategory);
+            newCategory = UoW.CategoryRepository.Add(newCategory);
 
-            uow.CompleteAsync();
+            UoW.CompleteAsync();
 
             return Created("api/Category/Create", newCategory);
         }
