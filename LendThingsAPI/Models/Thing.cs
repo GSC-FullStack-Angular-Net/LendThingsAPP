@@ -6,7 +6,7 @@
         {
         }
 
-        public Thing(int idThing, string description,  Category? category)
+        public Thing(int idThing, string description,  Category category)
         {
             Id = idThing;
             Description = description;
@@ -16,6 +16,6 @@
         public string Description {get; set;}
         public DateTime CreationDate { get; } = DateTime.UtcNow;
 
-        public Category? Category { get; set; }
+        public Category Category { get; set; }
     }
 }
