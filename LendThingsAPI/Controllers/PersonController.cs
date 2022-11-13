@@ -35,7 +35,14 @@ namespace LendThingsAPI.Controllers
         [Route("{id}")]
         public IActionResult GetOne([FromRoute]int id)
         {
-            return Ok(UoW.PersonRepository.GetById(id));
+            var existingPerson = UoW.PersonRepository.GetById(id);
+            //Esta funcionalidad la realiza automaticamente el framework al enviar un OKObjectResul con parametro Null
+            //pero para realizar el test la incluí
+            if (existingPerson is null)
+            {
+                return NoContent();
+            }
+            return Ok(existingPerson);
         }
 
         [HttpPost]
@@ -50,7 +57,7 @@ namespace LendThingsAPI.Controllers
             }
 
             var newPerson = Mapper.Map<Person>(personForCreationDTO);
-            UoW.PersonRepository.Add(newPerson);
+            newPerson = UoW.PersonRepository.Add(newPerson);
             UoW.CompleteAsync();
 
             return Ok(newPerson);
@@ -63,7 +70,7 @@ namespace LendThingsAPI.Controllers
             var personExisting = UoW.PersonRepository.GetById(id);
             if (personExisting is null)
             {
-                return NotFound($"A Person with the id {id} is not created.");
+                return NoContent();
             }
 
             personExisting.PhoneNumber = personData.PhoneNumber;
@@ -83,7 +90,7 @@ namespace LendThingsAPI.Controllers
             var personExisting = UoW.PersonRepository.GetById(id);
             if (personExisting is null)
             {
-                return NotFound($"A Person with the id {id} is not created.");
+                return NoContent();
             }
 
             personExisting.PhoneNumber = personData?.PhoneNumber ?? personExisting.PhoneNumber;
@@ -101,7 +108,7 @@ namespace LendThingsAPI.Controllers
         {
             if (!UoW.PersonRepository.Delete(id))
             {
-                return NotFound($"A Person with the id {id} is not created.");
+                return NoContent();
             }
             UoW.CompleteAsync();
 
