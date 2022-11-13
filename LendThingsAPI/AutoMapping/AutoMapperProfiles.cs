@@ -9,6 +9,7 @@ namespace LendThingsAPI.AutoMapping
         public AutoMapperProfiles():base()
         {
             CreateMap<CategoryForCreationDTO, Category>();
+            CreateMap<PersonForCreationDTO, Person>();
         }
     }
 }
