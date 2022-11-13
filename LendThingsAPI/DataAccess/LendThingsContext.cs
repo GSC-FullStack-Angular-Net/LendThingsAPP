@@ -4,13 +4,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LendThingsAPI.DataAccess
 {
-    public class LendThingsContext:IdentityDbContext
+    public class LendThingsContext:IdentityDbContext<User>
     {
         
         public LendThingsContext(DbContextOptions<LendThingsContext> options) : base(options)
         {
         }
-
 
         public DbSet<Thing> Things { get; set; }
         public DbSet<Loan>  Loans { get; set; }

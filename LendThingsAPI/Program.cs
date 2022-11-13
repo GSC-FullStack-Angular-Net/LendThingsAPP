@@ -1,9 +1,9 @@
 using AutoMapper;
+using LendThingsAPI.Configuration;
 using LendThingsAPI.DataAccess;
 using LendThingsAPI.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -23,7 +23,11 @@ builder.Services.AddSqlServer<LendThingsContext>(builder.Configuration.GetConnec
     .AddIdentityCore<User>()
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<LendThingsContext>();
+
 builder.Services.AddScoped<IUnitOfWork,UnitOfWork>();
+
+//Agregando configuracion para JWT
+builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("JWT"));
 
 //Authorization and Authentication
 builder.Services
@@ -48,6 +52,9 @@ builder.Services
 builder.Services.AddAutoMapper(typeof(Program));
 
 var app = builder.Build();
+
+//Initialize User Data
+await SampleData.Initialize(app.Services);
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
