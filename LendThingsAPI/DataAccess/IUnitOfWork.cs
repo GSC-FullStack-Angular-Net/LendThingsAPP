@@ -6,7 +6,7 @@ namespace LendThingsAPI.DataAccess
     {
         ICategoryRepository CategoryRepository { get; }
         LoanRepository LoanRepository { get; }
-        PersonRepository PersonRepository { get; }
+        IPersonRepository PersonRepository { get; }
         ThingRepository ThingRepository { get; }
 
         int CompleteAsync();

@@ -9,7 +9,7 @@ namespace LendThingsAPI.DataAccess
 
         public LoanRepository LoanRepository { get; private set; }
 
-        public PersonRepository PersonRepository { get; private set; }
+        public IPersonRepository PersonRepository { get; private set; }
 
         public ThingRepository ThingRepository { get; private set; }
 
