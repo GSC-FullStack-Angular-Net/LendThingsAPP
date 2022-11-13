@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LendThingsAPI.Models
 {
-    public class SampleData
+    public class InitializationDataForUsers
     {
         async public static Task Initialize(IServiceProvider serviceProvider)
         {

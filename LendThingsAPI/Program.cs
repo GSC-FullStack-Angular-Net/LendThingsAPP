@@ -54,7 +54,11 @@ builder.Services.AddAutoMapper(typeof(Program));
 var app = builder.Build();
 
 //Initialize User Data
-await SampleData.Initialize(app.Services);
+if (app.Environment.IsDevelopment())
+{
+    await InitializationDataForUsers.Initialize(app.Services);
+    await InitializationDataForCategories.Initialize(app.Services);
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
