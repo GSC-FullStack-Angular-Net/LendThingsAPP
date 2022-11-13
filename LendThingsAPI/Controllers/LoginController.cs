@@ -28,7 +28,7 @@ namespace LendThingsAPI.Controllers
 
         [HttpGet()]
         [Route("Login")]
-        async public Task<IActionResult> Index([FromBody]UserForLoginDTO userToLogIn)
+        async public Task<IActionResult> Login([FromBody]UserForLoginDTO userToLogIn)
         {
             var user = await UserManager.FindByNameAsync(userToLogIn.UserName);
 
