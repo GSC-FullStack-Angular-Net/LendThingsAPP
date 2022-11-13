@@ -6,7 +6,7 @@ namespace LendThingsAPI.AutoMapping
 {
     public class AutoMapperProfiles : Profile
     {
-        protected AutoMapperProfiles()
+        public AutoMapperProfiles():base()
         {
             CreateMap<CategoryForCreationDTO, Category>();
         }
