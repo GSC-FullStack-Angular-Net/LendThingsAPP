@@ -24,6 +24,21 @@ namespace LendThingsAPI.Controllers
             Mapper = mapper;
         }
 
+        [HttpGet()]
+        [Route("")]
+        public IActionResult GetAll()
+        {
+            var existingCategories = UoW.CategoryRepository.GetAll();
+            return Ok(existingCategories);
+        }
+
+        [HttpGet()]
+        [Route("{id}")]
+        public IActionResult GetOne(int id)
+        {
+            var existingCategory = UoW.CategoryRepository.GetById(id);
+            return Ok(existingCategory);
+        }
 
         [HttpPost()]
         [Route("create")]
@@ -40,7 +55,7 @@ namespace LendThingsAPI.Controllers
 
             UoW.CompleteAsync();
 
-            return Created("api/Category/Create", newCategory);
+            return Created($"api/Category/{newCategory.Id}", newCategory);
         }
     }
 }
