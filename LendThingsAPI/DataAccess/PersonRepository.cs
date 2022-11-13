@@ -2,7 +2,7 @@
 
 namespace LendThingsAPI.DataAccess
 {
-    public class PersonRepository : BaseRepository<Person>
+    public class PersonRepository : BaseRepository<Person>, IPersonRepository
     {
         public PersonRepository(LendThingsContext context) : base(context)
         {

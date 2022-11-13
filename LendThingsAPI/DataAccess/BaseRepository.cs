@@ -38,7 +38,7 @@ namespace LendThingsAPI.DataAccess
 
         public TEntity GetById(int id)
         {
-            return dbSet.SingleOrDefault(GetById(id));
+            return dbSet.SingleOrDefault(t=>t.Id == id);
         }
 
         public TEntity Update(TEntity entity)
