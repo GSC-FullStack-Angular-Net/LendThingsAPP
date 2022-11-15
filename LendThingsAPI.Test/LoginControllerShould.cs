@@ -34,7 +34,7 @@ namespace LendThingsAPI.Test
             sut = new LoginController(MockUserManager.Object, MockOptionsJwt.Object);
         }
 
-        [Fact(Skip ="Consultar Marcos! MockUserManager")]
+        [Fact]
         async public void Return_Forbid_On_Unregistered_User()
         {
             //Arrange
