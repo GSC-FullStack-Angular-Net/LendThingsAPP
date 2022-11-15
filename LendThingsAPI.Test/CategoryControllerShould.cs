@@ -20,11 +20,7 @@ namespace LendThingsAPI.Test
 
         public CategoryControllerShould()
         {
-            var expectedReturn = new List<Category>() {
-                new Category { Id = 1, Description = "Machinery" },
-                new Category { Id = 2, Description = "School" },
-                new Category { Id = 3, Description = "Computer" }
-            };
+            var expectedReturn = CategoryMockData.GetCategoriesList();
             CategoryRepositoryMock = new Mock<ICategoryRepository>();
             CategoryRepositoryMock.Setup(m => m.GetAll()).Returns(expectedReturn);
 
