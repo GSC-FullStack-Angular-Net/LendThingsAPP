@@ -26,7 +26,7 @@ namespace LendThingsAPI.Controllers
         }
 
 
-        [HttpGet()]
+        [HttpPost()]
         [Route("Login")]
         async public Task<IActionResult> Login([FromBody]UserForLoginDTO userToLogIn)
         {
