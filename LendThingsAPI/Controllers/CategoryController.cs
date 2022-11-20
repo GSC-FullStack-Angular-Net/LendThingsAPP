@@ -12,8 +12,8 @@ namespace LendThingsAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    [Authorize(Roles = "Owner, Administrator")]
+    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    //[Authorize(Roles = "Owner, Administrator")]
     public class CategoryController : ControllerBase
     {
         private IUnitOfWork UoW { get; }

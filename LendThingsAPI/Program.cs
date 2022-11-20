@@ -26,6 +26,15 @@ builder.Services.AddSqlServer<LendThingsContext>(builder.Configuration.GetConnec
 
 builder.Services.AddScoped<IUnitOfWork,UnitOfWork>();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: "Any",
+                      policy =>
+                      {
+                          policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+                      });
+});
+
 //Agregando configuracion para JWT
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("JWT"));
 
@@ -69,9 +78,12 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseCors("Any");
+
 app.UseAuthorization();
 
 app.UseAuthentication();
+
 
 app.MapControllers();
 
