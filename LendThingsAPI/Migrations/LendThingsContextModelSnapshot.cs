@@ -22,7 +22,7 @@ namespace LendThingsAPI.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("LendThingsAPI.Models.Category", b =>
+            modelBuilder.Entity("LendThingsCommonClasses.Models.Category", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -39,7 +39,7 @@ namespace LendThingsAPI.Migrations
                     b.ToTable("Categories");
                 });
 
-            modelBuilder.Entity("LendThingsAPI.Models.Loan", b =>
+            modelBuilder.Entity("LendThingsCommonClasses.Models.Loan", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -68,7 +68,7 @@ namespace LendThingsAPI.Migrations
                     b.ToTable("Loans");
                 });
 
-            modelBuilder.Entity("LendThingsAPI.Models.Person", b =>
+            modelBuilder.Entity("LendThingsCommonClasses.Models.Person", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -93,7 +93,7 @@ namespace LendThingsAPI.Migrations
                     b.ToTable("People");
                 });
 
-            modelBuilder.Entity("LendThingsAPI.Models.Thing", b =>
+            modelBuilder.Entity("LendThingsCommonClasses.Models.Thing", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -115,7 +115,7 @@ namespace LendThingsAPI.Migrations
                     b.ToTable("Things");
                 });
 
-            modelBuilder.Entity("LendThingsAPI.Models.User", b =>
+            modelBuilder.Entity("LendThingsCommonClasses.Models.User", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -321,15 +321,15 @@ namespace LendThingsAPI.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("LendThingsAPI.Models.Loan", b =>
+            modelBuilder.Entity("LendThingsCommonClasses.Models.Loan", b =>
                 {
-                    b.HasOne("LendThingsAPI.Models.Person", "Person")
+                    b.HasOne("LendThingsCommonClasses.Models.Person", "Person")
                         .WithMany()
                         .HasForeignKey("PersonId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("LendThingsAPI.Models.Thing", "Thing")
+                    b.HasOne("LendThingsCommonClasses.Models.Thing", "Thing")
                         .WithMany()
                         .HasForeignKey("ThingId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -340,9 +340,9 @@ namespace LendThingsAPI.Migrations
                     b.Navigation("Thing");
                 });
 
-            modelBuilder.Entity("LendThingsAPI.Models.Thing", b =>
+            modelBuilder.Entity("LendThingsCommonClasses.Models.Thing", b =>
                 {
-                    b.HasOne("LendThingsAPI.Models.Category", "Category")
+                    b.HasOne("LendThingsCommonClasses.Models.Category", "Category")
                         .WithMany()
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -362,7 +362,7 @@ namespace LendThingsAPI.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("LendThingsAPI.Models.User", null)
+                    b.HasOne("LendThingsCommonClasses.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -371,7 +371,7 @@ namespace LendThingsAPI.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("LendThingsAPI.Models.User", null)
+                    b.HasOne("LendThingsCommonClasses.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -386,7 +386,7 @@ namespace LendThingsAPI.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("LendThingsAPI.Models.User", null)
+                    b.HasOne("LendThingsCommonClasses.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -395,7 +395,7 @@ namespace LendThingsAPI.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("LendThingsAPI.Models.User", null)
+                    b.HasOne("LendThingsCommonClasses.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
