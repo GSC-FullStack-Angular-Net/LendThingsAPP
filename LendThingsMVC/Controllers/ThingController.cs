@@ -43,14 +43,13 @@ namespace LendThingsMVC.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(ThingForCreationViewModel thingViewModel)
+        public async Task<IActionResult> Create(ThingForCreationViewModel thingViewModel)
         {
             if (!ModelState.IsValid)
                 return RedirectToAction(nameof(Create));
 
             var newThing = mapper.Map<ThingForCreationDTO>(thingViewModel);
-            thingService.SaveAsync(newThing);
-
+            await thingService.SaveAsync(newThing);
             return RedirectToAction(nameof(Index));
         }
 
@@ -84,8 +83,8 @@ namespace LendThingsMVC.Controllers
             {
                 return View(thingViewModel);
             }
-
-            thingService.UpdateAsync(mapper.Map<ThingBaseDTO>(thingViewModel));
+            var thingDTO = mapper.Map<ThingBaseDTO>(thingViewModel);
+            await thingService.UpdateAsync(thingDTO);
             return RedirectToAction(nameof(Index));
         }
 
@@ -99,7 +98,9 @@ namespace LendThingsMVC.Controllers
                 return NotFound();
             }
 
-            return View(mapper.Map<ThingForCreationViewModel>(thing));
+            var thingViewModel = mapper.Map<ThingViewModel>(thing);
+
+            return View(thingViewModel);
         }
 
         [HttpPost, ActionName("Delete")]
@@ -111,8 +112,8 @@ namespace LendThingsMVC.Controllers
             {
                 return NotFound();
             }
-
-            thingService.DeleteAsync(mapper.Map<ThingBaseDTO>(thing));
+            var thingDTO = mapper.Map<ThingBaseDTO>(thing);
+            await thingService.DeleteAsync(thingDTO);
             return RedirectToAction(nameof(Index));
         }
     }

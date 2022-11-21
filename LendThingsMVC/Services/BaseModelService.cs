@@ -1,11 +1,13 @@
 ﻿using LendThingsMVC.Configuration;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using NuGet.Protocol;
 using System.Net.Http.Headers;
+using System.Text;
 
 namespace LendThingsMVC.Services
 {
-    public abstract class BaseModelService<B, F, C, U, D> : IBaseModelService<B,F,C,U,D>
+    public abstract class BaseModelService<B, F, C, U, D> : IBaseModelService<B, F, C, U, D>
     {
         private readonly IOptions<APIOptions> options;
 
@@ -14,17 +16,13 @@ namespace LendThingsMVC.Services
             this.options = options;
         }
 
-        public abstract void Delete(D entity);
-        public abstract void DeleteAsync(D entity);
+        public abstract Task DeleteAsync(D entity);
         public abstract bool Exists(int id);
-        public abstract List<B> GetAllBase();
         public abstract Task<List<B>> GetAllBaseAsync();
-        public abstract List<F> GetAllFull();
         public abstract Task<List<F>> GetAllFullAsync();
-        public abstract F GetById(int id);
         public abstract Task<F> GetByIdAsync(int id);
-        public abstract void SaveAsync(C entity);
-        public abstract void UpdateAsync(U entity);
+        public abstract Task SaveAsync(C entity);
+        public abstract Task UpdateAsync(U entity);
 
         async protected Task<T> DoGetRequestFor<T>(string urlForRequestOnApi)
             where T : class
@@ -40,10 +38,9 @@ namespace LendThingsMVC.Services
                 // Hace la llamada
                 var response = await client.GetAsync(urlForRequestOnApi);
 
-                // Si el servicio responde correctamente
                 if (response.IsSuccessStatusCode)
                 {
-                    // Lee el response y lo deserializa como un Product
+                    // Lee el response y lo deserializa
                     return await response.Content.ReadFromJsonAsync<T>();
                 }
                 // Sino devuelve null
@@ -51,8 +48,31 @@ namespace LendThingsMVC.Services
             }
         }
 
-        async protected Task<CreatedResult> DoPostRequestFor<T>(string urlForRequestOnApi, object body)
+        async protected Task<T> DoPostRequestFor<T>(string urlForRequestOnApi, object body)
             where T : class
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(options.Value.BaseUrl);
+
+                // Agrega el header Accept: application/json para recibir la data como json  
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                // Hace la llamada
+                var response = await client.PostAsJsonAsync(urlForRequestOnApi, body);
+                
+                if (response.IsSuccessStatusCode)
+                {
+                    // Lee el response y lo deserializa
+                    var res= await response.Content.ReadFromJsonAsync<T>();
+                }
+                // Sino devuelve null
+                return await Task.FromResult(null as T);
+            }
+        }
+        async protected Task<T> DoDeleteRequestFor<T>(string urlForRequestOnApi)
+           where T : class
         {
             using (var client = new HttpClient())
             {
@@ -63,16 +83,39 @@ namespace LendThingsMVC.Services
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                 
                 // Hace la llamada
-                var response = await client.PostAsJsonAsync(urlForRequestOnApi,body);
+                var response = await client.DeleteAsync(urlForRequestOnApi);
 
-                // Si el servicio responde correctamente
                 if (response.IsSuccessStatusCode)
                 {
-                    // Lee el response y lo deserializa como un Product
-                    return await response.Content.ReadFromJsonAsync<CreatedResult>();
+                    // Lee el response y lo deserializa
+                    return await response.Content.ReadFromJsonAsync<T>();
                 }
                 // Sino devuelve null
-                return await Task.FromResult(null as CreatedResult);
+                return await Task.FromResult<T>(null as T);
+            }
+        }
+        async protected Task<T> DoPatchRequestFor<T>(string urlForRequestOnApi, object body)
+            where T : class
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(options.Value.BaseUrl);
+
+                // Agrega el header Accept: application/json para recibir la data como json  
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+               
+                var content = new StringContent(body.ToJson(), Encoding.UTF8, "application/json-patch+json");
+                // Hace la llamada
+                var response = await client.PatchAsync(urlForRequestOnApi, content);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    // Lee el response y lo deserializa
+                    var res = await response.Content.ReadFromJsonAsync<T>();
+                }
+                // Sino devuelve null
+                return await Task.FromResult(null as T);
             }
         }
     }

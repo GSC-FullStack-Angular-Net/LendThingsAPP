@@ -11,14 +11,15 @@ namespace LendThingsMVC.Services
         {
         }
 
-        public override void Delete(ThingBaseDTO entity)
+        public override Task<List<ThingBaseDTO>> GetAllBaseAsync()
         {
             throw new NotImplementedException();
         }
 
-        public override void DeleteAsync(ThingBaseDTO entity)
+        async public override Task<List<ThingFullDTO>> GetAllFullAsync()
         {
-            throw new NotImplementedException();
+            var result =await DoGetRequestFor<List<ThingFullDTO>>("Thing");
+            return result;
         }
 
         public override bool Exists(int id)
@@ -26,44 +27,25 @@ namespace LendThingsMVC.Services
             throw new NotImplementedException();
         }
 
-        public override List<ThingBaseDTO> GetAllBase()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override Task<List<ThingBaseDTO>> GetAllBaseAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override List<ThingFullDTO> GetAllFull()
-        {
-            throw new NotImplementedException();
-        }
-
-        async public override Task<List<ThingFullDTO>> GetAllFullAsync()
-        {
-            return await DoGetRequestFor<List<ThingFullDTO>>("Thing");
-        }
-
-        public override ThingFullDTO GetById(int id)
-        {
-            throw new NotImplementedException();
-        }
-
         async public override Task<ThingFullDTO> GetByIdAsync(int id)
         {
-            return await DoGetRequestFor<ThingFullDTO>($"Thing/{id}");
+            var result = await DoGetRequestFor<ThingFullDTO>($"Thing/{id}");
+            return result;
         }
 
-        async public override void SaveAsync(ThingForCreationDTO entity)
+        public override async Task UpdateAsync(ThingBaseDTO entity)
         {
-            var resp = await DoPostRequestFor<ThingForCreationDTO>($"Thing/Create",entity);
+            var result = await DoPatchRequestFor<ThingBaseDTO>($"Thing/{entity.Id}",entity);
         }
 
-        public override void UpdateAsync(ThingBaseDTO entity)
+        async public override Task DeleteAsync(ThingBaseDTO entity)
         {
-            throw new NotImplementedException();
+            var result = await DoDeleteRequestFor<string>($"thing/{entity.Id}");
+        }
+
+        async public override Task SaveAsync(ThingForCreationDTO entity)
+        {
+            await DoPostRequestFor<ThingForCreationDTO>($"Thing/Create",entity);
         }
     }
 }
