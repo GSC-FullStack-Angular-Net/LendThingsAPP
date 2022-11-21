@@ -2,8 +2,8 @@
 using FluentAssertions;
 using LendThingsAPI.Controllers;
 using LendThingsAPI.DataAccess;
-using LendThingsAPI.DTO;
-using LendThingsAPI.Models;
+using LendThingsCommonClasses.DTO;
+using LendThingsCommonClasses.Models;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using System;

@@ -1,14 +1,23 @@
 ﻿using AutoMapper;
-using LendThingsAPI.Models;
+using LendThingsCommonClasses.DTO;
 using LendThingsMVC.Models;
+using LendThingsMVC.Services;
 
-namespace LendThingsAPI.AutoMapping
+namespace LendThingsMVC.AutoMapping
 {
     public class AutoMapperProfiles : Profile
     {
-        public AutoMapperProfiles():base()
+        public AutoMapperProfiles() : base()
         {
-            CreateMap<Thing, ThingViewModel>();
+
+            CreateMap<ThingForCreationDTO, ThingForCreationViewModel>().ReverseMap(); 
+            CreateMap<ThingForCreationViewModel, ThingFullDTO>()
+                .ReverseMap()
+                .ForMember(src=> src.Category,opt=>opt.MapFrom(dto=>dto.Category.Id));
+            CreateMap<ThingForCreationViewModel, ThingBaseDTO>();
+            CreateMap<ThingFullDTO, ThingViewModel>().ReverseMap();
+            CreateMap<CategoryFullDTO, CategoryViewModel>().ReverseMap();
+
         }
     }
 }

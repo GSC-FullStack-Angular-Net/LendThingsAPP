@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace LendThingsAPI.Models
+namespace LendThingsCommonClasses.Models
 {
     public class User:IdentityUser
     {

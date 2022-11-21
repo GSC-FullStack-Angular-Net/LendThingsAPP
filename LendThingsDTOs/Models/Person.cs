@@ -1,4 +1,4 @@
-﻿namespace LendThingsAPI.Models
+﻿namespace LendThingsCommonClasses.Models
 {
     public class Person : BaseEntity
     {

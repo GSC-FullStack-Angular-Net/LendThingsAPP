@@ -1,8 +1,9 @@
 ﻿using LendThingsAPI.DataAccess;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using LendThingsCommonClasses.Models;
 
-namespace LendThingsAPI.Models
+namespace LendThingsAPI.DataInitialization
 {
     public class InitializationDataForCategories
     {
@@ -14,12 +15,12 @@ namespace LendThingsAPI.Models
 
             var UoW = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
 
-            string[] categories = new string[] {"School","Tools", "Computer","Money"};
+            string[] categories = new string[] { "School", "Tools", "Computer", "Money" };
 
             var listOfCategories = UoW.CategoryRepository.GetAll();
             foreach (var description in categories)
             {
-                if(!listOfCategories.Any(c=>c.Description == description))
+                if (!listOfCategories.Any(c => c.Description == description))
                 {
                     UoW.CategoryRepository.Add(new Category() { Description = description });
                 }

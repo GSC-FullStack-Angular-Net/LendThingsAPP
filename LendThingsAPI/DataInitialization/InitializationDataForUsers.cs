@@ -2,8 +2,10 @@
 using Microsoft.AspNetCore.Identity;
 using LendThingsAPI.DataAccess;
 using Microsoft.EntityFrameworkCore;
+using LendThingsCommonClasses.Models;
 
-namespace LendThingsAPI.Models
+
+namespace LendThingsAPI.DataInitialization
 {
     public class InitializationDataForUsers
     {
@@ -24,7 +26,7 @@ namespace LendThingsAPI.Models
 
                 if (!context.Roles.Any(r => r.NormalizedName == role.ToUpper()))
                 {
-                    await roleStore.CreateAsync(new IdentityRole(role) { NormalizedName= role.ToUpper() });
+                    await roleStore.CreateAsync(new IdentityRole(role) { NormalizedName = role.ToUpper() });
                 }
             }
 

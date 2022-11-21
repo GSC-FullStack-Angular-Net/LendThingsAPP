@@ -1,9 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace LendThingsAPI.DTO
+namespace LendThingsCommonClasses.DTO
 {
     public class PersonForCreationDTO
     {
+        public PersonForCreationDTO()
+        {
+        }
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         public string Name { get; set; }
         public string PhoneNumber { get; set; }

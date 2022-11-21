@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using LendThingsAPI.DTO;
-using LendThingsAPI.Models;
+using LendThingsCommonClasses.DTO;
+using LendThingsCommonClasses.Models;
 
 namespace LendThingsAPI.AutoMapping
 {
@@ -10,6 +10,8 @@ namespace LendThingsAPI.AutoMapping
         {
             CreateMap<CategoryForCreationDTO, Category>();
             CreateMap<PersonForCreationDTO, Person>();
+            CreateMap<ThingForCreationDTO, Thing>().ForMember(t => t.Category, option => option.Ignore()).ReverseMap();
         }
+
     }
 }

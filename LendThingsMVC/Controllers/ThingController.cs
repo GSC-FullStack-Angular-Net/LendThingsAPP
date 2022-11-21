@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using LendThingsAPI.Models;
+using LendThingsCommonClasses.DTO;
 using LendThingsMVC.Models;
 using LendThingsMVC.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -9,39 +9,20 @@ namespace LendThingsMVC.Controllers
     public class ThingController : Controller
     {
         private readonly IMapper mapper;
-
         private readonly IThingService thingService;
+        private readonly ICategoryService categoryService;
 
-        public ThingController(IThingService thingService, IMapper mapper)
+        public ThingController(IThingService thingService,ICategoryService categoryService, IMapper mapper)
         {
             this.thingService = thingService;
+            this.categoryService = categoryService;
             this.mapper = mapper;
         }
-
-        //Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Create(ThingViewModel thingViewModel)
-        {
-            if (!ModelState.IsValid)
-                return View("Create", thingViewModel);
-
-            var entity = mapper.Map<Thing>(thingViewModel);
-            thingService.SaveAsync(entity);
-
-            return RedirectToAction(nameof(Index));
-        }
-
 
         //Retrive
         async public Task<IActionResult> Index()
         {
-            var things = await thingService.GetAllAsync();
+            var things = await thingService.GetAllFullAsync();
             var viewModels = mapper.Map<List<ThingViewModel>>(things);
             return View(viewModels);
         }
@@ -53,6 +34,28 @@ namespace LendThingsMVC.Controllers
             return View(viewModel);
         }
 
+        //Create
+        async public Task<IActionResult> Create()
+        {
+            ViewBag.CategoryList = await categoryService.GetAllBaseAsync();
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Create(ThingForCreationViewModel thingViewModel)
+        {
+            if (!ModelState.IsValid)
+                return RedirectToAction(nameof(Create));
+
+            var newThing = mapper.Map<ThingForCreationDTO>(thingViewModel);
+            thingService.SaveAsync(newThing);
+
+            return RedirectToAction(nameof(Index));
+        }
+
+
+
 
         //Update
         public async Task<IActionResult> Edit(int id)
@@ -63,13 +66,14 @@ namespace LendThingsMVC.Controllers
             {
                 return NotFound();
             }
-
-            return View(mapper.Map<ThingViewModel>(thing));
+            ViewBag.Categories = await categoryService.GetAllBaseAsync();
+            var thingViewModel = mapper.Map<ThingForCreationViewModel>(thing);
+            return View(thingViewModel);
         }
 
         [HttpPost] 
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, ThingViewModel thingViewModel)
+        public async Task<IActionResult> Edit(int id, ThingForCreationViewModel thingViewModel)
         {
             if (id != thingViewModel.Id)
             {
@@ -81,7 +85,7 @@ namespace LendThingsMVC.Controllers
                 return View(thingViewModel);
             }
 
-            thingService.UpdateAsync(mapper.Map<Thing>(thingViewModel));
+            thingService.UpdateAsync(mapper.Map<ThingBaseDTO>(thingViewModel));
             return RedirectToAction(nameof(Index));
         }
 
@@ -95,7 +99,7 @@ namespace LendThingsMVC.Controllers
                 return NotFound();
             }
 
-            return View(mapper.Map<ThingViewModel>(thing));
+            return View(mapper.Map<ThingForCreationViewModel>(thing));
         }
 
         [HttpPost, ActionName("Delete")]
@@ -108,7 +112,7 @@ namespace LendThingsMVC.Controllers
                 return NotFound();
             }
 
-            thingService.DeleteAsync(thing);
+            thingService.DeleteAsync(mapper.Map<ThingBaseDTO>(thing));
             return RedirectToAction(nameof(Index));
         }
     }

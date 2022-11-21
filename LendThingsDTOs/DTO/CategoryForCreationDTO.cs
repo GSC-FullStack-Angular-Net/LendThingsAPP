@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace LendThingsAPI.DTO
+namespace LendThingsCommonClasses.DTO
 {
     public class CategoryForCreationDTO
     {

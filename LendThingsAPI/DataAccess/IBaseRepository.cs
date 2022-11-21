@@ -1,4 +1,4 @@
-﻿using LendThingsAPI.Models;
+﻿using LendThingsCommonClasses.Models;
 
 namespace LendThingsAPI.DataAccess
 {

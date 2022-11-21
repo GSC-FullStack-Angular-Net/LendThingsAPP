@@ -1,7 +1,8 @@
 using AutoMapper;
 using LendThingsAPI.Configuration;
 using LendThingsAPI.DataAccess;
-using LendThingsAPI.Models;
+using LendThingsAPI.DataInitialization;
+using LendThingsCommonClasses.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;

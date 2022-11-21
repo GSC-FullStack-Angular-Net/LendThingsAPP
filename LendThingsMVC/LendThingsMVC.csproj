@@ -8,10 +8,12 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="12.0.0" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.10" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\LendThingsAPI\LendThingsAPI.csproj" />
+    <ProjectReference Include="..\LendThingsDTOs\LendThingsCommonClasses.csproj" />
   </ItemGroup>
 
 </Project>

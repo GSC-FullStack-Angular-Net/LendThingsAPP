@@ -1,10 +1,15 @@
+using LendThingsMVC.Configuration;
 using LendThingsMVC.Services;
+using AutoMapper;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.Configure<APIOptions>(builder.Configuration.GetSection("API"));
+
 builder.Services.AddScoped<IThingService, ThingService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
 
 builder.Services.AddAutoMapper(typeof(Program));
 
