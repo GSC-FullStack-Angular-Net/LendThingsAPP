@@ -26,7 +26,8 @@ namespace LendThingsAPI.Controllers
         public IActionResult GetAll()
         {
             var existingThings = UoW.ThingRepository.GetAll();
-            return Ok(existingThings);
+            var existingThingsDTO = Mapper.Map<IEnumerable<ThingFullDTO>>(existingThings);
+            return Ok(existingThingsDTO);
         }
 
         [HttpGet()]
@@ -34,7 +35,8 @@ namespace LendThingsAPI.Controllers
         public IActionResult GetOne(int id)
         {
             var existingThing = UoW.ThingRepository.GetById(id);
-            return Ok(existingThing);
+            var existingThingDTO = Mapper.Map<ThingFullDTO>(existingThing);
+            return Ok(existingThingDTO);
         }
 
         [HttpPost()]
@@ -53,8 +55,10 @@ namespace LendThingsAPI.Controllers
             newThing = UoW.ThingRepository.Add(newThing);
 
             UoW.CompleteAsync();
+            
+            var newThingDTO = Mapper.Map<ThingBaseDTO>(newThing);
 
-            return Created($"api/Thing/{newThing.Id}", newThing);
+            return Created($"api/Thing/{newThingDTO.Id}", newThingDTO);
         }
 
         [HttpPut()]
@@ -74,28 +78,30 @@ namespace LendThingsAPI.Controllers
             var result = UoW.ThingRepository.Update(thingExisting);
             UoW.CompleteAsync();
 
-            return Ok(result);
+            var resultDTO = Mapper.Map<ThingBaseDTO>(result);
+            return Ok(resultDTO);
         }
 
         [HttpPatch()]
         [Route("{id}")]
         public IActionResult PartialUpdate(int id, ThingForPartialUpdateDTO thingData)
         {
-            var personExisting = UoW.ThingRepository.GetById(id);
-            if (personExisting is null)
+            var thingExisting = UoW.ThingRepository.GetById(id);
+            if (thingExisting is null)
             {
                 return NoContent();
             }
 
-            personExisting.Description = thingData?.Description ?? personExisting.Description;
-            if(thingData.Category is not null && personExisting.Category.Id!=thingData.Category)
+            thingExisting.Description = thingData?.Description ?? thingExisting.Description;
+            if(thingData.Category is not null && thingExisting.Category.Id!=thingData.Category)
             {
                 var newCategory = UoW.CategoryRepository.GetById((int)thingData.Category);
-                personExisting.Category = newCategory;
+                thingExisting.Category = newCategory;
             }
             UoW.CompleteAsync();
 
-            return Ok(personExisting);
+            var resultDTO = Mapper.Map<ThingBaseDTO>(thingExisting);
+            return Ok(resultDTO);
         }
 
         [HttpDelete()]
