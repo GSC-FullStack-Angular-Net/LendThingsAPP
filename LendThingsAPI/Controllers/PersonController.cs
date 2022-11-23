@@ -36,11 +36,9 @@ namespace LendThingsAPI.Controllers
         public IActionResult GetOne([FromRoute]int id)
         {
             var existingPerson = UoW.PersonRepository.GetById(id);
-            //Esta funcionalidad la realiza automaticamente el framework al enviar un OKObjectResul con parametro Null
-            //pero para realizar el test la incluí
             if (existingPerson is null)
             {
-                return NoContent();
+                return NotFound();
             }
             return Ok(existingPerson);
         }
@@ -52,7 +50,7 @@ namespace LendThingsAPI.Controllers
             var personExisting = UoW.PersonRepository.GetAll().SingleOrDefault(p => p.Email == personForCreationDTO.Email);
             if (personExisting is not null)
             {
-                //Esto seria un securityleak si se trataria de usuarios, pero como en este caso no es importante.
+                //Esto seria un securityleak si se trataria de usuarios, pero en este caso no es importante.
                 return BadRequest($"A Person with the email {personForCreationDTO.Email} is already created. Id={personExisting.Id}.");
             }
 

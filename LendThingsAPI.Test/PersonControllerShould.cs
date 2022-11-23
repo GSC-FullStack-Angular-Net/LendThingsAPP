@@ -64,12 +64,12 @@ namespace LendThingsAPI.Test
         }
 
         [Fact]
-        public void GetOne_With_Invalid_Id_Return_NoContent()
+        public void GetOne_With_Invalid_Id_Return_NotFound()
         {
 
             var resul = sut.GetOne(4);
 
-            resul.Should().BeOfType<NoContentResult>();
+            resul.Should().BeOfType<NotFoundResult>();
         }
 
         [Fact]

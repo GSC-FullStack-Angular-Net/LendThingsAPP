@@ -26,6 +26,10 @@ namespace LendThingsAPI.Controllers
         public IActionResult GetAll()
         {
             var existingThings = UoW.ThingRepository.GetAll();
+            if (existingThings is null)
+            {
+                return NotFound();
+            }
             var existingThingsDTO = Mapper.Map<IEnumerable<ThingFullDTO>>(existingThings);
             return Ok(existingThingsDTO);
         }
@@ -35,6 +39,10 @@ namespace LendThingsAPI.Controllers
         public IActionResult GetOne(int id)
         {
             var existingThing = UoW.ThingRepository.GetById(id);
+            if (existingThing is null)
+            {
+                return NotFound();
+            }
             var existingThingDTO = Mapper.Map<ThingFullDTO>(existingThing);
             return Ok(existingThingDTO);
         }
@@ -68,9 +76,12 @@ namespace LendThingsAPI.Controllers
             var thingExisting = UoW.ThingRepository.GetById(id);
             if (thingExisting is null)
             {
-                return NoContent();
+                return NotFound();
             }
-
+            if (thingExisting.Description != thingData.Description && UoW.ThingRepository.GetAll().FirstOrDefault(t => t.Description == thingData.Description) is not null)
+            {
+                return BadRequest($"The Thing: {thingData.Description} is created already.");
+            }
             thingExisting.Description = thingData.Description;
             var newCategoy = UoW.CategoryRepository.GetById(thingData.Category);
             thingExisting.Category = newCategoy;
@@ -84,20 +95,25 @@ namespace LendThingsAPI.Controllers
 
         [HttpPatch()]
         [Route("{id}")]
-        public IActionResult PartialUpdate(int id, ThingForPartialUpdateDTO thingData)
+        public IActionResult PartialUpdate(int id, ThingPartialUpdateDTO thingData)
         {
             var thingExisting = UoW.ThingRepository.GetById(id);
             if (thingExisting is null)
             {
-                return NoContent();
+                return NotFound();
             }
-
+            if (thingExisting.Description != thingData.Description && UoW.ThingRepository.GetAll().FirstOrDefault(t => t.Description == thingData.Description) is not null)
+            {
+                return BadRequest($"The Thing: {thingData.Description} is created already.");
+            }
+            //Mapping Only data that has changed
             thingExisting.Description = thingData?.Description ?? thingExisting.Description;
-            if(thingData.Category is not null && thingExisting.Category.Id!=thingData.Category)
+            if(thingData!.Category is not null && thingExisting.Category.Id!=thingData.Category)
             {
                 var newCategory = UoW.CategoryRepository.GetById((int)thingData.Category);
                 thingExisting.Category = newCategory;
             }
+
             UoW.CompleteAsync();
 
             var resultDTO = Mapper.Map<ThingBaseDTO>(thingExisting);
@@ -110,7 +126,7 @@ namespace LendThingsAPI.Controllers
         {
             if (!UoW.ThingRepository.Delete(id))
             {
-                return NoContent();
+                return NotFound();
             }
             UoW.CompleteAsync();
 
