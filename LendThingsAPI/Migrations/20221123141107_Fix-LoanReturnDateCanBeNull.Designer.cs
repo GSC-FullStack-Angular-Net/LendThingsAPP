@@ -4,6 +4,7 @@ using LendThingsAPI.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LendThingsAPI.Migrations
 {
     [DbContext(typeof(LendThingsContext))]
-    partial class LendThingsContextModelSnapshot : ModelSnapshot
+    [Migration("20221123141107_Fix-LoanReturnDateCanBeNull")]
+    partial class FixLoanReturnDateCanBeNull
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
