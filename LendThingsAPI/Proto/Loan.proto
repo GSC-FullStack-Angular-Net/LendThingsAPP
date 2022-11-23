@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+option csharp_namespace = "LendThingsAPI.Proto";
+
+service ProtoLoanService{
+	rpc EndLoan (EndLoanRequest) returns (EndLoanResponse);
+}
+
+message EndLoanRequest{
+	int32 idLoanToEnd = 1;
+}
+
+message EndLoanResponse{
+	bool success = 1;
+	string message = 2;
+}
