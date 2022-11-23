@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using LendThingsAPI.Proto;
 using LendThingsCommonClasses.DTO;
 using LendThingsCommonClasses.Models;
 
@@ -15,6 +16,7 @@ namespace LendThingsAPI.AutoMapping
 
             CreateMap<ThingBaseDTO, Thing>().ReverseMap().ForMember(ori=>ori.Category, opt=>opt.MapFrom(dest=>dest.Category.Id));
             CreateMap<ThingFullDTO, Thing>().ReverseMap();
+
         }
 
     }

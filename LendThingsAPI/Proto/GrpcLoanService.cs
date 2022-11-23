@@ -35,5 +35,26 @@ namespace LendThingsAPI.Proto
 
             return Task.FromResult(new EndLoanResponse { Success=true, Message= $"The Loan of {loan.Thing.Description} to {loan.Person.Name} with id {loan.Id} made on {loan.Date} has been returned." });
         }
+
+        public override Task<GetAllLoansResponse> GetAllLoans(Empty request, ServerCallContext context)
+        {
+            var loans = uow.LoanRepository.GetAll();
+            IEnumerable<gPRCLoanFull> listgRPCLoans = loans.Select(l =>
+            {
+                return new gPRCLoanFull
+                {
+                    Id= l.Id,
+                    //Mejor forma de parsear Fechas?
+                    Date=Timestamp.FromDateTime(DateTime.SpecifyKind(l.Date, DateTimeKind.Utc)),
+                    ReturnDate = l.ReturnDate is not null?Timestamp.FromDateTime(DateTime.SpecifyKind((DateTime)l.ReturnDate,DateTimeKind.Utc)):null,
+                    Person = new gPRCPersonBase { Id=l.Person.Id, Name=l.Person.Name,Email=l.Person.Email,PhoneNumber=l.Person.PhoneNumber },
+                    Thing = new gPRCThingBase { Id=l.Thing.Id,Category=l.Thing.Category.Id, Description=l.Thing.Description },
+                };
+            });
+            var resp = new GetAllLoansResponse();
+            resp.LoanList.AddRange(listgRPCLoans);
+
+            return Task.FromResult(resp);
+        }
     }
 }

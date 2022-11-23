@@ -9,6 +9,11 @@ namespace LendThingsAPI.DataAccess
         {
 
         }
+        public override List<Loan> GetAll()
+        {
+            return dbSet.Include(l => l.Thing.Category).Include(l => l.Person).ToList();
+        }
+
         public override Loan GetById(int id)
         {
             return dbSet.Include(l=>l.Thing).Include(l=>l.Person).SingleOrDefault(l=>l.Id == id);
