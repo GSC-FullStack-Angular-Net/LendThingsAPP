@@ -17,7 +17,7 @@ namespace LendThingsCommonClasses.DTO
         [Required]
         public string Description { get; set; }
 
-        public DateTime CreationDate { get; }
+        public DateTime CreationDate { get; set; }
         [Required]
         public CategoryFullDTO Category { get; set; }
     }
