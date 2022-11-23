@@ -3,6 +3,7 @@ using FluentAssertions.Common;
 using LendThingsAPI.Configuration;
 using LendThingsAPI.DataAccess;
 using LendThingsAPI.DataInitialization;
+using LendThingsAPI.Proto;
 using LendThingsCommonClasses.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -64,6 +65,12 @@ builder.Services.AddCors(options =>
                       });
 });
 
+//gRPCConfiguration
+builder.Services.AddGrpc(opt => {
+    opt.EnableDetailedErrors = true;
+});
+builder.Services.AddGrpcReflection();
+
 //Agregando configuracion para JWT
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("JWT"));
 
@@ -113,6 +120,8 @@ app.UseAuthorization();
 
 app.UseAuthentication();
 
+app.MapGrpcReflectionService();
+app.MapGrpcService<GrpcLoanService>();
 
 app.MapControllers();
 

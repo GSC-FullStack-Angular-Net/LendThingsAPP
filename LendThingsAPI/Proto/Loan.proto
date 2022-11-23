@@ -1,0 +1,45 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto"; //google.protobuf.Empty
+import "google/protobuf/timestamp.proto"; // DateTime = google.protobuf.Timestamp
+
+option csharp_namespace = "LendThingsAPI.Proto";
+
+service ProtoLoanService{
+	rpc EndLoan (EndLoanRequest) returns (EndLoanResponse);
+	rpc GetAllLoans (google.protobuf.Empty) returns (GetAllLoansResponse);
+}
+
+message EndLoanRequest{
+	int32 idLoanToEnd = 1;
+}
+
+message EndLoanResponse{
+	bool success = 1;
+	string message = 2;
+}
+
+message GetAllLoansResponse{
+	repeated gPRCLoanFull loanList=1;
+}
+
+message gPRCLoanFull{
+	int32 Id=1;
+	google.protobuf.Timestamp Date =2;
+    google.protobuf.Timestamp ReturnDate =3;
+	gPRCThingBase Thing =4;
+    gPRCPersonBase Person =5;
+}
+
+message gPRCThingBase{
+	int32 Id =1;
+    string Description =2;
+    int32 Category =3;
+}
+
+message gPRCPersonBase{
+	int32 Id=1;
+	string Name =2;
+    string PhoneNumber =3;
+    string Email =4;
+}
