@@ -1,4 +1,6 @@
-﻿using LendThingsMVC.Configuration;
+﻿using LendThingsCommonClasses.DTO;
+using LendThingsMVC.Configuration;
+using LendThingsMVC.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using NuGet.Protocol;
@@ -16,16 +18,15 @@ namespace LendThingsMVC.Services
             this.options = options;
         }
 
-        public abstract Task DeleteAsync(D entity);
+        public abstract Task<ProcesedResponse<string>> DeleteAsync(D entity);
         public abstract bool Exists(int id);
-        public abstract Task<List<B>> GetAllBaseAsync();
-        public abstract Task<List<F>> GetAllFullAsync();
-        public abstract Task<F> GetByIdAsync(int id);
-        public abstract Task SaveAsync(C entity);
-        public abstract Task UpdateAsync(U entity);
+        public abstract Task<ProcesedResponse<List<B>>> GetAllBaseAsync();
+        public abstract Task<ProcesedResponse<List<F>>> GetAllFullAsync();
+        public abstract Task<ProcesedResponse<F>> GetByIdAsync(int id);
+        public abstract Task<ProcesedResponse<B>> SaveAsync(C entity);
+        public abstract Task<ProcesedResponse<B>> UpdateAsync(U entity);
 
-        async protected Task<T> DoGetRequestFor<T>(string urlForRequestOnApi)
-            where T : class
+        async protected Task<HttpResponseMessage> DoGetRequestOn(string urlForRequestOnApi)
         {
             using (var client = new HttpClient())
             {
@@ -38,18 +39,11 @@ namespace LendThingsMVC.Services
                 // Hace la llamada
                 var response = await client.GetAsync(urlForRequestOnApi);
 
-                if (response.IsSuccessStatusCode)
-                {
-                    // Lee el response y lo deserializa
-                    return await response.Content.ReadFromJsonAsync<T>();
-                }
-                // Sino devuelve null
-                return await Task.FromResult<T>(null as T);
+                return response;
             }
         }
 
-        async protected Task<T> DoPostRequestFor<T>(string urlForRequestOnApi, object body)
-            where T : class
+        async protected Task<HttpResponseMessage> DoPostRequestFor<T>(string urlForRequestOnApi, object body)
         {
             using (var client = new HttpClient())
             {
@@ -61,17 +55,13 @@ namespace LendThingsMVC.Services
 
                 // Hace la llamada
                 var response = await client.PostAsJsonAsync(urlForRequestOnApi, body);
-                
-                if (response.IsSuccessStatusCode)
-                {
-                    // Lee el response y lo deserializa
-                    var res= await response.Content.ReadFromJsonAsync<T>();
-                }
-                // Sino devuelve null
-                return await Task.FromResult(null as T);
+
+
+                return response;
             }
         }
-        async protected Task<T> DoDeleteRequestFor<T>(string urlForRequestOnApi)
+
+        async protected Task<HttpResponseMessage> DoDeleteRequestFor<T>(string urlForRequestOnApi)
            where T : class
         {
             using (var client = new HttpClient())
@@ -85,16 +75,11 @@ namespace LendThingsMVC.Services
                 // Hace la llamada
                 var response = await client.DeleteAsync(urlForRequestOnApi);
 
-                if (response.IsSuccessStatusCode)
-                {
-                    // Lee el response y lo deserializa
-                    return await response.Content.ReadFromJsonAsync<T>();
-                }
-                // Sino devuelve null
-                return await Task.FromResult<T>(null as T);
+                return response;
             }
         }
-        async protected Task<T> DoPatchRequestFor<T>(string urlForRequestOnApi, object body)
+
+        async protected Task<HttpResponseMessage> DoPatchRequestFor<T>(string urlForRequestOnApi, object body)
             where T : class
         {
             using (var client = new HttpClient())
@@ -109,14 +94,29 @@ namespace LendThingsMVC.Services
                 // Hace la llamada
                 var response = await client.PatchAsync(urlForRequestOnApi, content);
 
-                if (response.IsSuccessStatusCode)
-                {
-                    // Lee el response y lo deserializa
-                    var res = await response.Content.ReadFromJsonAsync<T>();
-                }
-                // Sino devuelve null
-                return await Task.FromResult(null as T);
+                return response;
             }
+        }
+
+        async protected virtual Task<ProcesedResponse<T>> ProcessResponse<T>(HttpResponseMessage response)
+        {
+            if (response.IsSuccessStatusCode)
+                {
+                    var procesedResponse = new ProcesedResponse<T> { 
+                        Body= await response.Content.ReadFromJsonAsync<T>(), 
+                        Response=response
+                    };
+                    return procesedResponse;
+                }
+                else
+                {
+                    var procesedResponse = new ProcesedResponse<T>
+                    {
+                        Response = response,
+                        PersonalizedError = await response.Content.ReadFromJsonAsync<string>()
+                    };
+                    return procesedResponse;
+                }
         }
     }
 }

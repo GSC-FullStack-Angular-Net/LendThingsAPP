@@ -3,10 +3,11 @@ using LendThingsCommonClasses.DTO;
 using LendThingsMVC.Models;
 using LendThingsMVC.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace LendThingsMVC.Controllers
 {
-    public class ThingController : Controller
+    public class ThingController : BaseCRUDController
     {
         private readonly IMapper mapper;
         private readonly IThingService thingService;
@@ -22,35 +23,68 @@ namespace LendThingsMVC.Controllers
         //Retrive
         async public Task<IActionResult> Index()
         {
-            var things = await thingService.GetAllFullAsync();
-            var viewModels = mapper.Map<List<ThingViewModel>>(things);
+            var response = await thingService.GetAllFullAsync();
+            if (response.Body is null)
+            {
+                return ManageServiceErrorResponse(response.Response);
+            }
+            var viewModels = mapper.Map<List<ThingViewModel>>(response.Body);
             return View(viewModels);
         }
 
         async public Task<IActionResult> Details(int id)
         {
-            var thing = await thingService.GetByIdAsync(id);
-            var viewModel = mapper.Map<ThingViewModel>(thing);
+            var response = await thingService.GetByIdAsync(id);
+            if (response.Body is null)
+            {
+                return ManageServiceErrorResponse(response.Response);   
+            }
+            var viewModel = mapper.Map<ThingViewModel>(response.Body);
             return View(viewModel);
         }
 
         //Create
         async public Task<IActionResult> Create()
         {
-            ViewBag.CategoryList = await categoryService.GetAllBaseAsync();
+            var response = await categoryService.GetAllBaseAsync();
+            if (response.Body is null)
+            {
+                return ManageServiceErrorResponse(response.Response);
+            }
+            ViewBag.CategoryList =  response.Body;
             return View();
         }
 
+
         [HttpPost]
+        [ActionName("Create")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(ThingForCreationViewModel thingViewModel)
+        public async Task<IActionResult> CreateOperation(ThingCreationViewModel thingViewModel)
         {
             if (!ModelState.IsValid)
                 return RedirectToAction(nameof(Create));
 
             var newThing = mapper.Map<ThingForCreationDTO>(thingViewModel);
-            await thingService.SaveAsync(newThing);
-            return RedirectToAction(nameof(Index));
+            var response = await thingService.SaveAsync(newThing);
+            if (response.PersonalizedError is not null)
+            {
+                ModelState.AddModelError("Description", response.PersonalizedError);
+                //Forma de volver a pasar la view pero sin tener que pedir las categorias??(El redirect no funciona porque resetea el ModelState)
+                var responseCategories = await categoryService.GetAllBaseAsync();
+                if (!responseCategories.Response.IsSuccessStatusCode)
+                {
+                    return ManageServiceErrorResponse(response.Response);
+                }
+                ViewBag.CategoryList = responseCategories.Body;
+                return View(thingViewModel);
+            }
+
+            if (!response.Response.IsSuccessStatusCode)
+            {
+                return ManageServiceErrorResponse(response.Response);
+            }
+            
+            return RedirectToAction(nameof(Details),new { id=response!.Body!.Id });
         }
 
 
@@ -59,32 +93,50 @@ namespace LendThingsMVC.Controllers
         //Update
         public async Task<IActionResult> Edit(int id)
         {
-            var thing = await thingService.GetByIdAsync(id);
-            
-            if (thing == null)
+            var response = await thingService.GetByIdAsync(id);
+
+            if (response.Body is null)
             {
-                return NotFound();
+                return ManageServiceErrorResponse(response.Response);
             }
-            ViewBag.Categories = await categoryService.GetAllBaseAsync();
-            var thingViewModel = mapper.Map<ThingForCreationViewModel>(thing);
+            var responseCategory = await categoryService.GetAllBaseAsync();
+            if (responseCategory.Body is null)
+            {
+                return ManageServiceErrorResponse(response.Response);
+            }
+            ViewBag.CategoryList = responseCategory.Body;
+            var thingViewModel = mapper.Map<ThingEditViewModel>(response.Body);
             return View(thingViewModel);
         }
 
         [HttpPost] 
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, ThingForCreationViewModel thingViewModel)
+        public async Task<IActionResult> Edit(int id, ThingEditViewModel thingViewModel)
         {
-            if (id != thingViewModel.Id)
-            {
-                return NotFound();
-            }
-
             if (!ModelState.IsValid)
             {
                 return View(thingViewModel);
             }
+
             var thingDTO = mapper.Map<ThingBaseDTO>(thingViewModel);
-            await thingService.UpdateAsync(thingDTO);
+            thingDTO.Id= id;
+            var response = await thingService.UpdateAsync(thingDTO);
+            if (response.PersonalizedError is not null)
+            {
+                ModelState.AddModelError("Description", response.PersonalizedError);
+                //Forma de volver a pasar la view pero sin tener que pedir las categorias??(El redirect no funciona porque resetea el ModelState)
+                var responseCategories = await categoryService.GetAllBaseAsync();
+                if (!responseCategories.Response.IsSuccessStatusCode)
+                {
+                    return ManageServiceErrorResponse(response.Response);
+                }
+                ViewBag.CategoryList = responseCategories.Body;
+                return View(thingViewModel);
+            }
+            if (response.Body is null)
+            {
+                return ManageServiceErrorResponse(response.Response);
+            }
             return RedirectToAction(nameof(Index));
         }
 
@@ -92,13 +144,13 @@ namespace LendThingsMVC.Controllers
         //Delete
         public async Task<IActionResult> Delete(int id)
         {
-            var thing = await thingService.GetByIdAsync(id);
-            if (thing == null)
+            var response = await thingService.GetByIdAsync(id);
+            if (response.Body is null)
             {
-                return NotFound();
+                return ManageServiceErrorResponse(response.Response);
             }
 
-            var thingViewModel = mapper.Map<ThingViewModel>(thing);
+            var thingViewModel = mapper.Map<ThingViewModel>(response.Body);
 
             return View(thingViewModel);
         }
@@ -107,13 +159,17 @@ namespace LendThingsMVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteOperation(int id)
         {
-            var thing = await thingService.GetByIdAsync(id);
-            if (thing is null)
+            var response = await thingService.GetByIdAsync(id);
+            if (response.Body is null)
             {
-                return NotFound();
+                return ManageServiceErrorResponse(response.Response);
             }
-            var thingDTO = mapper.Map<ThingBaseDTO>(thing);
-            await thingService.DeleteAsync(thingDTO);
+            var thingDTO = mapper.Map<ThingBaseDTO>(response.Body);
+            var responseDelete = await thingService.DeleteAsync(thingDTO);
+            if (responseDelete.Body is null)
+            {
+                return ManageServiceErrorResponse(response.Response);
+            }
             return RedirectToAction(nameof(Index));
         }
     }

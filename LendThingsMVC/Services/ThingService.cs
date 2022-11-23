@@ -1,5 +1,6 @@
 ﻿using LendThingsCommonClasses.DTO;
 using LendThingsMVC.Configuration;
+using LendThingsMVC.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 
@@ -11,15 +12,15 @@ namespace LendThingsMVC.Services
         {
         }
 
-        public override Task<List<ThingBaseDTO>> GetAllBaseAsync()
+        public override Task<ProcesedResponse<List<ThingBaseDTO>>> GetAllBaseAsync()
         {
             throw new NotImplementedException();
         }
 
-        async public override Task<List<ThingFullDTO>> GetAllFullAsync()
+        async public override Task<ProcesedResponse<List<ThingFullDTO>>> GetAllFullAsync()
         {
-            var result =await DoGetRequestFor<List<ThingFullDTO>>("Thing");
-            return result;
+            var response = await DoGetRequestOn("Thing");
+            return await ProcessResponse<List<ThingFullDTO>>(response);
         }
 
         public override bool Exists(int id)
@@ -27,25 +28,30 @@ namespace LendThingsMVC.Services
             throw new NotImplementedException();
         }
 
-        async public override Task<ThingFullDTO> GetByIdAsync(int id)
+        async public override Task<ProcesedResponse<ThingFullDTO>> GetByIdAsync(int id)
         {
-            var result = await DoGetRequestFor<ThingFullDTO>($"Thing/{id}");
-            return result;
+            var response = await DoGetRequestOn($"Thing/{id}");
+            return await ProcessResponse<ThingFullDTO>(response);
+
         }
 
-        public override async Task UpdateAsync(ThingBaseDTO entity)
+        public override async Task<ProcesedResponse<ThingBaseDTO>> UpdateAsync(ThingBaseDTO entity)
         {
-            var result = await DoPatchRequestFor<ThingBaseDTO>($"Thing/{entity.Id}",entity);
+            var response = await DoPatchRequestFor<ThingBaseDTO>($"Thing/{entity.Id}",entity);
+            return await ProcessResponse<ThingBaseDTO>(response);
         }
 
-        async public override Task DeleteAsync(ThingBaseDTO entity)
+        async public override Task<ProcesedResponse<string>> DeleteAsync(ThingBaseDTO entity)
         {
-            var result = await DoDeleteRequestFor<string>($"thing/{entity.Id}");
+            var response = await DoDeleteRequestFor<string>($"thing/{entity.Id}");
+            return await ProcessResponse<string>(response);
         }
 
-        async public override Task SaveAsync(ThingForCreationDTO entity)
+        async public override Task<ProcesedResponse<ThingBaseDTO>> SaveAsync(ThingForCreationDTO entity)
         {
-            await DoPostRequestFor<ThingForCreationDTO>($"Thing/Create",entity);
+            var response = await DoPostRequestFor<ThingBaseDTO>($"Thing/Create",entity);
+            return await ProcessResponse<ThingBaseDTO>(response);
         }
+
     }
 }

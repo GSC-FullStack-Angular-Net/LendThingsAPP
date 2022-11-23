@@ -1,4 +1,6 @@
 ﻿
+using LendThingsMVC.Models;
+
 namespace LendThingsMVC.Services
 {
     /// <summary>
@@ -10,19 +12,13 @@ namespace LendThingsMVC.Services
     /// <typeparam name="D">DeletionDTO</typeparam>
     public interface IBaseModelService<B,F,C,U,D>
     {
-        Task<List<B>> GetAllBaseAsync();
-
-        Task<List<F>> GetAllFullAsync();
-
-        Task<F> GetByIdAsync(int id);
-
-
-        Task SaveAsync(C entity);
-        Task UpdateAsync(U entity);
-
-        bool Exists(int id);
-
-        Task DeleteAsync(D entity);
+         Task<ProcesedResponse<string>> DeleteAsync(D entity);
+         bool Exists(int id);
+         Task<ProcesedResponse<List<B>>> GetAllBaseAsync();
+         Task<ProcesedResponse<List<F>>> GetAllFullAsync();
+         Task<ProcesedResponse<F>> GetByIdAsync(int id);
+         Task<ProcesedResponse<B>> SaveAsync(C entity);
+         Task<ProcesedResponse<B>> UpdateAsync(U entity);
 
     }
 }

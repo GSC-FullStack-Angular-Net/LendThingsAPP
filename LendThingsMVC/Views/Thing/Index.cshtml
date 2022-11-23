@@ -1,4 +1,5 @@
 ﻿@model IEnumerable<ThingViewModel>
+@using System.Linq
 
 @{
     ViewData["Title"] = "Things";
@@ -47,3 +48,9 @@
         }
     </tbody>
 </table>
+
+@if(!Model.Any()){
+    <div class="text-center">    
+        <h1 class="display-6">This list is empty, please create a thing</h1>
+    </div>
+}

@@ -12,7 +12,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LendThingsAPI.Test", "LendT
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LendThingsMVC", "LendThingsMVC\LendThingsMVC.csproj", "{0BFA7B94-E1C5-4AEA-B8E3-E86B788CDD32}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LendThingsCommonClasses", "LendThingsDTOs\LendThingsCommonClasses.csproj", "{99DEC447-51EA-4249-97FE-EBE8A16174C5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LendThingsCommonClasses", "LendThingsDTOs\LendThingsCommonClasses.csproj", "{40B2C66A-3756-47AF-BB88-45BF6856A6AD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -32,10 +32,10 @@ Global
 		{0BFA7B94-E1C5-4AEA-B8E3-E86B788CDD32}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0BFA7B94-E1C5-4AEA-B8E3-E86B788CDD32}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0BFA7B94-E1C5-4AEA-B8E3-E86B788CDD32}.Release|Any CPU.Build.0 = Release|Any CPU
-		{99DEC447-51EA-4249-97FE-EBE8A16174C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{99DEC447-51EA-4249-97FE-EBE8A16174C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{99DEC447-51EA-4249-97FE-EBE8A16174C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{99DEC447-51EA-4249-97FE-EBE8A16174C5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{40B2C66A-3756-47AF-BB88-45BF6856A6AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{40B2C66A-3756-47AF-BB88-45BF6856A6AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{40B2C66A-3756-47AF-BB88-45BF6856A6AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{40B2C66A-3756-47AF-BB88-45BF6856A6AD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

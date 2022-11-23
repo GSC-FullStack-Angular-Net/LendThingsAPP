@@ -11,7 +11,7 @@ namespace LendThingsMVC.Models
         [Required]
         public string Description { get; set; }
 
-        public DateTime CreationDate { get; }
+        public DateTime CreationDate { get; set; }
         [Required]
         public CategoryViewModel Category { get; set; }
     }

@@ -1,18 +1,18 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using System.ComponentModel.DataAnnotations;
 
 namespace LendThingsMVC.Models
 {
-    public class ThingForCreationViewModel
+    public class ThingCreationViewModel
     {
-        public ThingForCreationViewModel()
+        public ThingCreationViewModel()
         {
         }
 
-        public int Id { get; set; }
         [Required(ErrorMessage ="Description is Mandatory.")]
         public string Description { get; set; }
-        public DateTime CreationDate { get; }
         [Required(ErrorMessage = "Category is Mandatory.")]
         public int Category { get; set; }
+
     }
 }
