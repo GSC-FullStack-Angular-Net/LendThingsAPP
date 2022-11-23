@@ -1,4 +1,4 @@
-﻿using LendThingsAPI.Models;
+﻿using LendThingsCommonClasses.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;

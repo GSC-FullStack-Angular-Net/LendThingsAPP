@@ -2,8 +2,8 @@ using AutoMapper;
 using FluentAssertions;
 using LendThingsAPI.Controllers;
 using LendThingsAPI.DataAccess;
-using LendThingsAPI.DTO;
-using LendThingsAPI.Models;
+using LendThingsCommonClasses.DTO;
+using LendThingsCommonClasses.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -14,6 +14,8 @@ namespace LendThingsAPI.Test
 {
     public class CategoryControllerShould
     {
+        private Mock<IMapper> MapperMock { get; }
+
         private CategoryController sut { get; }
         private Mock<IUnitOfWork> UoWMock { get; }
         private Mock<ICategoryRepository> CategoryRepositoryMock { get; }
@@ -26,9 +28,9 @@ namespace LendThingsAPI.Test
 
             UoWMock = new Mock<IUnitOfWork>();
             UoWMock.Setup(m => m.CategoryRepository).Returns(CategoryRepositoryMock.Object);
-            var mockMapper = new Mock<IMapper>();
+            MapperMock = new Mock<IMapper>();
 
-            sut = new CategoryController(UoWMock.Object, mockMapper.Object);
+            sut = new CategoryController(UoWMock.Object, MapperMock.Object);
         }
 
 
@@ -40,10 +42,10 @@ namespace LendThingsAPI.Test
             var blankCategoryDTO = new CategoryForCreationDTO();
 
             //Act
-            var result = (BadRequestObjectResult)sut.Create(blankCategoryDTO);
+            var result = sut.Create(blankCategoryDTO);
             //Assert
-            Assert.Equal("Description is mandatory", result.Value);
-            Assert.Equal(400, result.StatusCode);
+            result.Should().BeOfType<BadRequestObjectResult>();
+            result.As<BadRequestObjectResult>().Value.Should().Be("Description is mandatory");
         }
 
 
@@ -66,14 +68,16 @@ namespace LendThingsAPI.Test
         {
             //Arrange
             var testCategoryDTO = new CategoryForCreationDTO() { Description = "Kitchen" };
-            CategoryRepositoryMock.Setup(m => m.Add(new Category() { Description = "Kitchen" })).Returns(new Category { Id = 4, Description = testCategoryDTO.Description });
+            var expectedCategory = new Category { Id = 4, Description = testCategoryDTO.Description };
+            CategoryRepositoryMock.Setup(m => m.Add(It.IsAny<Category>())).Returns(expectedCategory);
 
+            MapperMock.Setup(m => m.Map<Category>(It.IsAny<CategoryForCreationDTO>())).Returns(expectedCategory);
             //Act
-            var result = (CreatedResult)sut.Create(testCategoryDTO);
+            var result = sut.Create(testCategoryDTO);
             //Assert
-            Assert.Equal("api/Category/Create", result.Location);
-            Assert.Equal(201, result.StatusCode);
-            
+            result.Should().BeOfType<CreatedResult>();
+            result.As<CreatedResult>().Location.Should().Be($"api/Category/{expectedCategory.Id}");
+            result.As<CreatedResult>().Value.Should().Be(expectedCategory);
         }
     }
 }

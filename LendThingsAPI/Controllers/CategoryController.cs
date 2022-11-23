@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using LendThingsAPI.DataAccess;
-using LendThingsAPI.DTO;
-using LendThingsAPI.Models;
+using LendThingsCommonClasses.DTO;
+using LendThingsCommonClasses.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -12,8 +12,8 @@ namespace LendThingsAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    [Authorize(Roles = "Owner, Administrator")]
+    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    //[Authorize(Roles = "Owner, Administrator")]
     public class CategoryController : ControllerBase
     {
         private IUnitOfWork UoW { get; }

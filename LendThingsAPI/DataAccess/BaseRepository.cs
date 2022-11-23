@@ -1,4 +1,4 @@
-﻿using LendThingsAPI.Models;
+﻿using LendThingsCommonClasses.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace LendThingsAPI.DataAccess
@@ -31,12 +31,12 @@ namespace LendThingsAPI.DataAccess
             return false;
         }
 
-        public List<TEntity> GetAll()
+        public virtual List<TEntity> GetAll()
         {
             return dbSet.ToList(); 
         }
 
-        public TEntity GetById(int id)
+        public virtual TEntity GetById(int id)
         {
             return dbSet.SingleOrDefault(t=>t.Id == id);
         }
