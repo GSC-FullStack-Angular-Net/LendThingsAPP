@@ -2,8 +2,8 @@
 using FluentAssertions;
 using LendThingsAPI.Controllers;
 using LendThingsAPI.DataAccess;
-using LendThingsAPI.DTO;
-using LendThingsAPI.Models;
+using LendThingsCommonClasses.DTO;
+using LendThingsCommonClasses.Models;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using System;
@@ -64,12 +64,12 @@ namespace LendThingsAPI.Test
         }
 
         [Fact]
-        public void GetOne_With_Invalid_Id_Return_NoContent()
+        public void GetOne_With_Invalid_Id_Return_NotFound()
         {
 
             var resul = sut.GetOne(4);
 
-            resul.Should().BeOfType<NoContentResult>();
+            resul.Should().BeOfType<NotFoundResult>();
         }
 
         [Fact]

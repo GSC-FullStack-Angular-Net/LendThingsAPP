@@ -1,8 +1,8 @@
-﻿using LendThingsAPI.Models;
+﻿using LendThingsCommonClasses.Models;
 
 namespace LendThingsAPI.DataAccess
 {
-    public class LoanRepository : BaseRepository<Loan>
+    public class LoanRepository : BaseRepository<Loan>, ILoanRepository 
     {
         public LoanRepository(LendThingsContext context) : base(context)
         {

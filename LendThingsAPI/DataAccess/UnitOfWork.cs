@@ -7,11 +7,11 @@ namespace LendThingsAPI.DataAccess
         private readonly LendThingsContext context;
         public ICategoryRepository CategoryRepository { get; private set; }
 
-        public LoanRepository LoanRepository { get; private set; }
+        public ILoanRepository LoanRepository { get; private set; }
 
         public IPersonRepository PersonRepository { get; private set; }
 
-        public ThingRepository ThingRepository { get; private set; }
+        public IThingRepository ThingRepository { get; private set; }
 
         public UnitOfWork(LendThingsContext context)
         {
