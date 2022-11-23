@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\LendThingsDTOs\LendThingsCommonClasses.csproj" />
+    <ProjectReference Include="..\LendThingsCommonClasses\LendThingsCommonClasses.csproj" />
   </ItemGroup>
 
 </Project>
