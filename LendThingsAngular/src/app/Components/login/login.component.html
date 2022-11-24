@@ -1,0 +1,19 @@
+<form [formGroup]="loginForm">
+    <div *ngIf="error.length !==0">
+        <span>{{error}}</span>
+    </div>
+
+    <p>Username</p>
+    <p>[Try <strong>MartinLambrecht</strong>]</p>
+    <input type="text" formControlName="username" />
+
+    <p>Password</p>
+    <p>[Try <strong>password</strong>]</p>
+    <input type="password" formControlName="password" />
+
+    <button type="submit" (click)="onSubmit()">LogIn</button>
+</form>
+
+<div *ngIf="loading">
+    <p>Put here a loading icon</p>
+</div>
