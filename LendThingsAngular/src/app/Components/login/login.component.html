@@ -1,0 +1,22 @@
+<br />
+<form [formGroup]="loginForm">
+    <div *ngIf="error.length !==0">
+        <span>{{error}}</span>
+    </div>
+
+    <mat-form-field>
+        <mat-label>Username</mat-label>
+        <input matInput type="text" formControlName="username" required />
+        <mat-hint>Try <strong>MartinLambrecht</strong></mat-hint>
+    </mat-form-field>
+    <mat-form-field>
+        <mat-label>Password</mat-label>
+        <input matInput type="password" formControlName="password" required />
+        <mat-hint>Try <strong>password</strong></mat-hint>
+    </mat-form-field>
+    <button mat-raised-button color="primary" type="submit" (click)="onSubmit()">LogIn</button>
+    <br />
+    <div *ngIf="loading">
+        <mat-progress-spinner mode="indeterminate" diameter="40"></mat-progress-spinner>
+    </div>
+</form>

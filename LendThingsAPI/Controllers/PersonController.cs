@@ -50,8 +50,7 @@ namespace LendThingsAPI.Controllers
             var personExisting = UoW.PersonRepository.GetAll().SingleOrDefault(p => p.Email == personForCreationDTO.Email);
             if (personExisting is not null)
             {
-                //Esto seria un securityleak si se trataria de usuarios, pero en este caso no es importante.
-                return BadRequest($"A Person with the email {personForCreationDTO.Email} is already created. Id={personExisting.Id}.");
+                return BadRequest(new {errors= new { Email = new string[] { $"A Person with the email {personForCreationDTO.Email} is already created. Id={personExisting.Id}." }} });
             }
 
             var newPerson = Mapper.Map<Person>(personForCreationDTO);
@@ -110,7 +109,7 @@ namespace LendThingsAPI.Controllers
             }
             UoW.CompleteAsync();
 
-            return Ok($"The Person with id {id} has been deleted.");
+            return Ok(new { msg = $"The Person with id {id} has been deleted." });
         }
     }
 }

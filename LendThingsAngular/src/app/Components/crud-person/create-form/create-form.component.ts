@@ -1,0 +1,79 @@
+import { Component, Inject, OnInit } from "@angular/core";
+import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
+import { FormBuilder, FormGroup } from "@angular/forms";
+import PersonForCreationDTO from "src/app/Models/PersonForCreationDTO";
+import { PersonService } from "src/app/Services/person.service";
+import { first, map } from "rxjs";
+import { HttpErrorResponse } from "@angular/common/http";
+
+@Component({
+	selector: "app-create-form",
+	templateUrl: "./create-form.component.html",
+	styleUrls: ["./create-form.component.css"],
+})
+export class CreateFormComponent implements OnInit {
+	emailError!: string;
+	phoneNumberError!: string;
+	nameError!: string;
+	constructor(
+		private personService: PersonService,
+		public dialogRef: MatDialogRef<CreateFormComponent>,
+		@Inject(MAT_DIALOG_DATA) public currentPerson: any,
+		private formBuilder: FormBuilder
+	) {}
+	personForm!: FormGroup<any>;
+
+	ngOnInit(): void {
+		this.personForm = this.formBuilder.group({
+			name: [this.currentPerson?.name ?? ""],
+			phoneNumber: [this.currentPerson?.phoneNumber ?? ""],
+			email: [this.currentPerson?.email ?? ""],
+		});
+	}
+
+	confirm() {
+		if (
+			this.personForm.invalid &&
+			!this.personForm.controls["email"].hasError("emailValidation")
+		) {
+			return;
+		}
+
+		var formPerson = new PersonForCreationDTO(
+			this.personForm.controls["name"].value,
+			this.personForm.controls["phoneNumber"].value,
+			this.personForm.controls["email"].value
+		);
+
+		//Llamar al servicio aca y usar las validaciones que devuelve el servidor
+		this.personService.create(formPerson).subscribe(
+			(response) => {
+				this.dialogRef.close();
+			},
+			(error: HttpErrorResponse) => {
+				this.setErrors(error.error.errors);
+			}
+		);
+	}
+
+	setErrors(errors: {
+		Email?: string[];
+		Name?: string[];
+		PhoneNumber?: string[];
+	}) {
+		if (errors.Email != null) {
+			this.personForm.controls["email"].setErrors({ emailValidation: true });
+			this.emailError = errors.Email[0];
+		}
+		if (errors.Name != null) {
+			this.personForm.controls["name"].setErrors({ nameValidation: true });
+			this.nameError = errors.Name[0];
+		}
+		if (errors.PhoneNumber != null) {
+			this.personForm.controls["phoneNumber"].setErrors({
+				phoneNumberValidation: true,
+			});
+			this.phoneNumberError = errors.PhoneNumber[0];
+		}
+	}
+}

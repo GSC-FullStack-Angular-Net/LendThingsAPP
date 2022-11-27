@@ -1,0 +1,10 @@
+<div mat-dialog-title>
+    Eliminate Form
+</div>
+<div mat-dialog-content>
+    <app-person-form [form]="personForm"></app-person-form>
+</div>
+<div mat-dialog-actions>
+    <button mat-button color="primary" (click)="confirm()">Confirm</button>
+    <button mat-button [mat-dialog-close]="true">Cancel</button>
+</div>

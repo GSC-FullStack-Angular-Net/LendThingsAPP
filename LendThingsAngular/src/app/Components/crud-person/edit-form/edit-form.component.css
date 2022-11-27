@@ -1,0 +1,17 @@
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+div{
+  width: 400px;
+}
+
+*{
+  justify-content: center;
+}
+
+.mat-dialog-title{
+  text-align: center;
+}

@@ -81,7 +81,7 @@ namespace LendThingsAPI.Test
             var result = sut.Create(personDTOToTest);
 
             result.Should().BeOfType<BadRequestObjectResult>();
-            result.As<BadRequestObjectResult>().Value.Should().Be($"A Person with the email {firstPersonOfList.Email} is already created. Id={firstPersonOfList.Id}.");
+            result.As<BadRequestObjectResult>().Value.Should().BeEquivalentTo(new { msg = $"A Person with the email {firstPersonOfList.Email} is already created. Id={firstPersonOfList.Id}." });
         }
 
         [Fact]
