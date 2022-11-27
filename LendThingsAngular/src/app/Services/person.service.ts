@@ -13,18 +13,21 @@ export class PersonService {
 	constructor(private http: HttpClient) {}
 
 	getAll() {
-		return this.http.get<PersonBaseDTO[]>(`${this.apiUrl}person`);
+		return this.http.get<PersonBaseDTO[]>(`${this.apiUrl}/person`);
 	}
 	getOne(id: number) {
-		return this.http.get<PersonBaseDTO>(`${this.apiUrl}person/${id}`);
+		return this.http.get<PersonBaseDTO>(`${this.apiUrl}/person/${id}`);
 	}
 	create(body: PersonForCreationDTO) {
-		return this.http.post<PersonBaseDTO>(`${this.apiUrl}person`, body);
+		return this.http.post<PersonBaseDTO>(`${this.apiUrl}/person`, body);
 	}
 	update(body: PersonForPartialUpdateDTO) {
-		return this.http.patch<PersonBaseDTO>(`${this.apiUrl}person`, body);
+		return this.http.patch<PersonBaseDTO>(
+			`${this.apiUrl}/person/${body.id}`,
+			body
+		);
 	}
 	delete(id: number) {
-		return this.http.delete<string>(`${this.apiUrl}person${id}`);
+		return this.http.delete<{ msg: string }>(`${this.apiUrl}/person/${id}`);
 	}
 }

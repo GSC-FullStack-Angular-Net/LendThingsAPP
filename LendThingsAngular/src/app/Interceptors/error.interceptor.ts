@@ -22,7 +22,7 @@ export class ErrorInterceptor implements HttpInterceptor {
 					this.loginService.logout();
 					location.reload();
 				}
-				const error = err.error.message || err.statusText;
+				const error = err;
 				return throwError(error);
 			})
 		);

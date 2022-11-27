@@ -1,0 +1,13 @@
+<mat-toolbar style="display: flex; justify-content: space-between;">
+    <div>
+        <a [routerLink]="['/']" routerLinkActive="router-link-active" mat-button
+            style="font-size:x-large; padding: 0 40px">LendThings</a>
+        <a [routerLink]="['/']" routerLinkActive="router-link-active" mat-button style="font-size:large">Home</a>
+        <a [routerLink]="['/person']" routerLinkActive="router-link-active" mat-button
+            style="font-size:large">Person</a>
+    </div>
+    <div>
+
+    </div>
+    <span *ngIf="currentUser?.username !=null">{{currentUser.username}}</span>
+</mat-toolbar>

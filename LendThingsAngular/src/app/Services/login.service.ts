@@ -3,6 +3,8 @@ import { HttpClient } from "@angular/common/http";
 import { User } from "../Models/User";
 import { BehaviorSubject, map, Observable } from "rxjs";
 import { environment } from "src/environments/environment";
+import jwt_decode from "jwt-decode";
+import { DecodedToken } from "../Models/DecodedToken";
 
 @Injectable({ providedIn: "root" })
 export class LoginService {
@@ -28,12 +30,25 @@ export class LoginService {
 				password,
 			})
 			.pipe(
-				map((user) => {
-					// Almacena los detalles del usuario y el token JWT para mantener
-					// al usuario logeado incluso entre actualizaciones de las páginas
-					localStorage.setItem("currentUser", JSON.stringify(user));
-					this.currentUserSubject.next(user);
-					return user;
+				map((serializedToken) => {
+					try {
+						var token: string = jwt_decode(serializedToken["AccessToken"]);
+						var decodedToken = new DecodedToken(token);
+						var splittedFullName = decodedToken.fullName.split(" ");
+						const user = new User(
+							decodedToken.userName,
+							splittedFullName[0],
+							splittedFullName[splittedFullName.length - 1],
+							serializedToken["AccessToken"]
+						);
+						// Almacena los detalles del usuario y el token JWT para mantener
+						// al usuario logeado incluso entre actualizaciones de las páginas
+						localStorage.setItem("currentUser", JSON.stringify(user));
+						this.currentUserSubject.next(user);
+						return user;
+					} catch (error) {
+						throw error;
+					}
 				})
 			);
 	}

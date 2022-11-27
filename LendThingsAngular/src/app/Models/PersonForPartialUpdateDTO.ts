@@ -1,8 +1,8 @@
 export default class PersonForPartialUpdateDTO {
 	constructor(
-		public Id?: number,
-		public Name?: string,
-		public PhoneNumber?: string,
-		public Email?: string
+		public id: number,
+		public name?: string,
+		public phoneNumber?: string,
+		public email?: string
 	) {}
 }

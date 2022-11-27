@@ -1,7 +1,7 @@
 export default class PersonForCreationDTO {
 	constructor(
-		public Name: string,
-		public PhoneNumber: string,
-		public Email: string
+		public name: string,
+		public phoneNumber: string,
+		public email: string
 	) {}
 }
