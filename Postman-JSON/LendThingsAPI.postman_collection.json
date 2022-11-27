@@ -1,0 +1,378 @@
+{
+	"info": {
+		"_postman_id": "543b6d9c-4121-4034-92b9-ebef0acb869c",
+		"name": "LendThingsAPI",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "17201792"
+	},
+	"item": [
+		{
+			"name": "Category",
+			"item": [
+				{
+					"name": "Create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Description\":\"AA\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/Category/create",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Category",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetOne /{id}",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/Category/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Category",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetAll",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/Category/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Category",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "LogIn",
+			"item": [
+				{
+					"name": "Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Set token variable\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.collectionVariables.set(\"token\", jsonData.accessToken);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userName\":\"MartinLambrecht\",\"password\":\"password\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/Login/Login",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Login",
+								"Login"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "noauth"
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Person",
+			"item": [
+				{
+					"name": "Create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Name\":\"Martin\",\r\n    \"Email\":\"martin@gmail.com\",\r\n    \"PhoneNumber\":\"1111111111\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/Person",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Person"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetAll",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/Person/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Person",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetOne /{id}",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/Person/5",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Person",
+								"5"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete /{id}",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/Person/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Person",
+								"1"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update /{id}",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Name\":\"Updated\",\r\n    \"Email\":\"a@a.com\",\r\n    \"PhoneNumber\":\"22222222\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/Person/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Person",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PartialUpdate /{id}",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"PhoneNumber\":\"44444444\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/Person/1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Person",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Thing",
+			"item": [
+				{
+					"name": "GetOne {id}",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/Thing/21",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"Thing",
+								"21"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"const GETtoken = {",
+					"    url: pm.collectionVariables.get(\"url\")+\"/login/login\",",
+					"    method: 'POST',",
+					"    header: {\"Content-Type\": \"application/json\"},",
+					"    body: {",
+					"     mode: 'raw',",
+					"     raw: JSON.stringify({\"userName\":\"MartinLambrecht\",\"password\":\"password\"})",
+					"  }",
+					"};",
+					"",
+					"pm.sendRequest(GETtoken,function(err, response){",
+					"    jsontoken= response.json()",
+					"    pm.collectionVariables.set(\"token\", jsontoken['AccessToken']);",
+					"})"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "url",
+			"value": "https://localhost:7186/api",
+			"type": "string"
+		},
+		{
+			"key": "token",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
