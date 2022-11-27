@@ -4,10 +4,10 @@ namespace LendThingsAPI.DataAccess
 {
     public interface IBaseRepository<TEntity> where TEntity : BaseEntity
     {
-        TEntity Add(TEntity entity);
-        bool Delete(int id);
-        List<TEntity> GetAll();
-        TEntity GetById(int id);
+        Task<TEntity> AddAsync(TEntity entity);
+        Task<bool> DeleteAsync(int id);
+        Task<List<TEntity>> GetAllAsync();
+        Task<TEntity> GetByIdAsync(int id);
         TEntity Update(TEntity entity);
     }
 }

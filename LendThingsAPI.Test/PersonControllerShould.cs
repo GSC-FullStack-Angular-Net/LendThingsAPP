@@ -26,7 +26,7 @@ namespace LendThingsAPI.Test
         {
             
             PersonRepositoryMock = new Mock<IPersonRepository>();
-            PersonRepositoryMock.Setup(m => m.GetAll()).Returns(PersonMockData.GetPersonList());
+            PersonRepositoryMock.Setup(m => m.GetAllAsync()).Returns(Task.FromResult(PersonMockData.GetPersonList()));
 
             UoWMock = new Mock<IUnitOfWork>();
             UoWMock.Setup(m => m.PersonRepository).Returns(PersonRepositoryMock.Object);
@@ -37,11 +37,11 @@ namespace LendThingsAPI.Test
         }
 
         [Fact]
-        public void GetAll_Return_Person_List()
+        async public Task GetAll_Return_Person_List()
         {
             var expectedReturn = PersonMockData.GetPersonList();
 
-            var result = sut.GetAll();
+            var result = await sut.GetAll();
 
             result.Should().BeOfType<OkObjectResult>();
             result.As<OkObjectResult>().Value.Should().Be(expectedReturn);
@@ -51,12 +51,12 @@ namespace LendThingsAPI.Test
         [InlineData(1)]
         [InlineData(2)]
         [InlineData(3)]
-        public void GetOne_With_Valid_Id_Return_Person(int id)
+        async public Task GetOne_With_Valid_Id_Return_Person(int id)
         {
             var expectedResul = PersonMockData.GetPersonList().First(p => p.Id == id);
-            PersonRepositoryMock.Setup(m => m.GetById(id)).Returns(expectedResul);
+            PersonRepositoryMock.Setup(m => m.GetByIdAsync(id)).Returns(Task.FromResult(expectedResul));
 
-            var result = sut.GetOne(id);
+            var result = await sut.GetOne(id);
 
             result.Should().BeOfType<OkObjectResult>();
             var a = result.As<OkObjectResult>().Value;
@@ -64,28 +64,28 @@ namespace LendThingsAPI.Test
         }
 
         [Fact]
-        public void GetOne_With_Invalid_Id_Return_NotFound()
+        async public Task GetOne_With_Invalid_Id_Return_NotFound()
         {
 
-            var resul = sut.GetOne(4);
+            var resul = await sut.GetOne(4);
 
             resul.Should().BeOfType<NotFoundResult>();
         }
 
         [Fact]
-        public void Create_With_Created_Email_Return_BadRequest()
+        async public Task Create_With_Created_Email_Return_BadRequest()
         {
             var firstPersonOfList = PersonMockData.GetPersonList().First();
             var personDTOToTest = new PersonForCreationDTO() { Name = "", PhoneNumber = "", Email = firstPersonOfList.Email };
 
-            var result = sut.Create(personDTOToTest);
+            var result = await sut.Create(personDTOToTest);
 
             result.Should().BeOfType<BadRequestObjectResult>();
-            result.As<BadRequestObjectResult>().Value.Should().BeEquivalentTo(new { msg = $"A Person with the email {firstPersonOfList.Email} is already created. Id={firstPersonOfList.Id}." });
+            result.As<BadRequestObjectResult>().Value.Should().BeEquivalentTo(new { errors = new { Email = new string[] { $"A Person with the email {firstPersonOfList.Email} is already created. Id={firstPersonOfList.Id}." } } });
         }
 
         [Fact]
-        public void Create_Return_Ok_With_New_Person()
+        async public Task Create_Return_Ok_With_New_Person()
         {
             var personDTOToTest = new PersonForCreationDTO() 
             {
@@ -103,65 +103,65 @@ namespace LendThingsAPI.Test
                 Email = "z@z.com"
             };
             MapperMock.Setup(m=>m.Map<Person>(personDTOToTest)).Returns(newPersonWithoutId);
-            PersonRepositoryMock.Setup(m => m.Add(newPersonWithoutId)).Returns(newPersonWithId);
+            PersonRepositoryMock.Setup(m => m.AddAsync(newPersonWithoutId)).Returns(Task.FromResult(newPersonWithId));
 
-            var result = sut.Create(personDTOToTest);
+            var result = await sut.Create(personDTOToTest);
 
             result.Should().BeOfType<OkObjectResult>();
             result.As<OkObjectResult>().Value.Should().BeEquivalentTo(newPersonWithId);
         }
 
         [Fact]
-        public void Update_With_Unexisting_Person_Return_NoContent()
+        async public Task Update_With_Unexisting_Person_Return_NoContent()
         {
             int idOnTest = 5;
             var person = new PersonForCreationDTO();
-            PersonRepositoryMock.Setup(m => m.GetById(It.IsAny<int>())).Returns(null as Person);
+            PersonRepositoryMock.Setup(m => m.GetByIdAsync(It.IsAny<int>())).Returns(Task.FromResult(null as Person));
 
-            var result = sut.Update(idOnTest, person);
+            var result = await sut.Update(idOnTest, person);
 
             result.Should().BeOfType<NoContentResult>();
         }
 
         [Fact]
-        public void Update_Return_Ok_With_Updated_Person() 
+        async public Task Update_Return_Ok_With_Updated_Person() 
         {
             var personBeforeUpdate= new Person() { Id = 99};
             var personAfterUpdate = new Person() { Id=99,Email = "z@z.com", Name = "Martin" , PhoneNumber = "111111111" };
             var person = new PersonForCreationDTO() { Email = personAfterUpdate.Email, Name = personAfterUpdate.Name,PhoneNumber= personAfterUpdate.PhoneNumber };
             
-            PersonRepositoryMock.Setup(m => m.GetById(It.IsAny<int>())).Returns(personBeforeUpdate);
+            PersonRepositoryMock.Setup(m => m.GetByIdAsync(It.IsAny<int>())).Returns(Task.FromResult(personBeforeUpdate));
             PersonRepositoryMock.Setup(m => m.Update(It.IsAny<Person>())).Returns(personAfterUpdate);
 
-            var result = sut.Update(personBeforeUpdate.Id, person);
+            var result = await sut.Update(personBeforeUpdate.Id, person);
 
             result.Should().BeOfType<OkObjectResult>();
             result.As<OkObjectResult>().Value.Should().BeEquivalentTo(personAfterUpdate);
         }
 
         [Fact]
-        public void PartialUpdate_Ok_With_Updated_Person()
+        async public Task PartialUpdate_Ok_With_Updated_Person()
         {
             var personBeforeUpdate = new Person() { Id = 99, Email = "z@z.com", Name = "Martin", PhoneNumber = "111111111" };
             var personAfterUpdate = new Person() { Id = 99, Email = "z@z.com", Name = "Update", PhoneNumber = "222222222" };
             var person = new PersonForPartialUpdateDTO() { Name = personAfterUpdate.Name, PhoneNumber = personAfterUpdate.PhoneNumber };
 
-            PersonRepositoryMock.Setup(m => m.GetById(It.IsAny<int>())).Returns(personBeforeUpdate);
+            PersonRepositoryMock.Setup(m => m.GetByIdAsync(It.IsAny<int>())).Returns(Task.FromResult(personBeforeUpdate));
 
-            var result = sut.PartialUpdate(personBeforeUpdate.Id, person);
+            var result = await sut.PartialUpdate(personBeforeUpdate.Id, person);
 
             result.Should().BeOfType<OkObjectResult>();
             result.As<OkObjectResult>().Value.Should().BeEquivalentTo(personAfterUpdate);
         }
 
         [Fact]
-        public void PartialUpdate_With_Unexisting_Person_Return_NoContent()
+        async public Task PartialUpdate_With_Unexisting_Person_Return_NoContent()
         {
             int idOnTest = 5;
             var person = new PersonForPartialUpdateDTO();
-            PersonRepositoryMock.Setup(m => m.GetById(It.IsAny<int>())).Returns(null as Person);
+            PersonRepositoryMock.Setup(m => m.GetByIdAsync(It.IsAny<int>())).Returns(Task.FromResult(null as Person));
 
-            var result = sut.PartialUpdate(idOnTest, person);
+            var result = await sut.PartialUpdate(idOnTest, person);
 
             result.Should().BeOfType<NoContentResult>();
         }
@@ -170,25 +170,25 @@ namespace LendThingsAPI.Test
         [InlineData(5)]
         [InlineData(33)]
         [InlineData(90)]
-        public void Delete_Return_NoContent_On_Unexisting_Id(int testId)
+        async public Task Delete_Return_NoContent_On_Unexisting_Id(int testId)
         {
-            PersonRepositoryMock.Setup(m=>m.Delete(testId)).Returns(false);
+            PersonRepositoryMock.Setup(m=>m.DeleteAsync(testId)).Returns(Task.FromResult(false));
 
-            var result = sut.Delete(testId);
+            var result = await sut.Delete(testId);
 
             result.Should().BeOfType<NoContentResult>();
         }
 
         [Fact]
-        public void Delete_Return_Ok_With_Message()
+        async public Task Delete_Return_Ok_With_Message()
         {
             int testId = 5;
-            PersonRepositoryMock.Setup(m => m.Delete(testId)).Returns(true);
+            PersonRepositoryMock.Setup(m => m.DeleteAsync(testId)).Returns(Task.FromResult(true));
 
-            var result = sut.Delete(testId);
+            var result = await sut.Delete(testId);
 
             result.Should().BeOfType<OkObjectResult>();
-            result.As<OkObjectResult>().Value.Should().Be($"The Person with id {testId} has been deleted.");
+            result.As<OkObjectResult>().Value.Should().BeEquivalentTo(new {msg= $"The Person with id {testId} has been deleted." });
 
         }
 

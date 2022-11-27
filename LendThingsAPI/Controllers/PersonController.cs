@@ -26,16 +26,16 @@ namespace LendThingsAPI.Controllers
 
         [HttpGet()]
         [Route("")]
-        public IActionResult GetAll()
+        async public Task<IActionResult> GetAll()
         {
-            return Ok(UoW.PersonRepository.GetAll());
+            return Ok(await UoW.PersonRepository.GetAllAsync());
         }
 
         [HttpGet()]
         [Route("{id}")]
-        public IActionResult GetOne([FromRoute]int id)
+        async public Task<IActionResult> GetOne([FromRoute]int id)
         {
-            var existingPerson = UoW.PersonRepository.GetById(id);
+            var existingPerson = await UoW.PersonRepository.GetByIdAsync(id);
             if (existingPerson is null)
             {
                 return NotFound();
@@ -45,26 +45,26 @@ namespace LendThingsAPI.Controllers
 
         [HttpPost]
         [Route("")]
-        public IActionResult Create(PersonForCreationDTO personForCreationDTO)
+        async public Task<IActionResult> Create(PersonForCreationDTO personForCreationDTO)
         {
-            var personExisting = UoW.PersonRepository.GetAll().SingleOrDefault(p => p.Email == personForCreationDTO.Email);
+            var personExisting = (await UoW.PersonRepository.GetAllAsync()).SingleOrDefault(p => p.Email == personForCreationDTO.Email);
             if (personExisting is not null)
             {
                 return BadRequest(new {errors= new { Email = new string[] { $"A Person with the email {personForCreationDTO.Email} is already created. Id={personExisting.Id}." }} });
             }
 
             var newPerson = Mapper.Map<Person>(personForCreationDTO);
-            newPerson = UoW.PersonRepository.Add(newPerson);
-            UoW.CompleteAsync();
+            newPerson = await UoW.PersonRepository.AddAsync(newPerson);
+            await UoW.CompleteAsync();
 
             return Ok(newPerson);
         }
 
         [HttpPut()]
         [Route("{id}")]
-        public IActionResult Update(int id,PersonForCreationDTO personData)
+        async public Task<IActionResult> Update(int id,PersonForCreationDTO personData)
         {
-            var personExisting = UoW.PersonRepository.GetById(id);
+            var personExisting = await UoW.PersonRepository.GetByIdAsync(id);
             if (personExisting is null)
             {
                 return NoContent();
@@ -75,16 +75,16 @@ namespace LendThingsAPI.Controllers
             personExisting.Name=personData.Name;
 
             var result = UoW.PersonRepository.Update(personExisting);
-            UoW.CompleteAsync();
+            await UoW.CompleteAsync();
 
             return Ok(result);
         }
 
         [HttpPatch()]
         [Route("{id}")]
-        public IActionResult PartialUpdate(int id, PersonForPartialUpdateDTO personData)
+        async public Task<IActionResult> PartialUpdate(int id, PersonForPartialUpdateDTO personData)
         {
-            var personExisting = UoW.PersonRepository.GetById(id);
+            var personExisting = await UoW.PersonRepository.GetByIdAsync(id);
             if (personExisting is null)
             {
                 return NoContent();
@@ -94,20 +94,20 @@ namespace LendThingsAPI.Controllers
             personExisting.Email = personData?.Email ?? personExisting.Email;
             personExisting.Name = personData?.Name ?? personExisting.Name;
 
-            UoW.CompleteAsync();
+            await UoW.CompleteAsync();
 
             return Ok(personExisting);
         }
 
         [HttpDelete()]
         [Route("{id}")]
-        public IActionResult Delete(int id)
+        async public Task<IActionResult> Delete(int id)
         {
-            if (!UoW.PersonRepository.Delete(id))
+            if (!await UoW.PersonRepository.DeleteAsync(id))
             {
                 return NoContent();
             }
-            UoW.CompleteAsync();
+            await UoW.CompleteAsync();
 
             return Ok(new { msg = $"The Person with id {id} has been deleted." });
         }

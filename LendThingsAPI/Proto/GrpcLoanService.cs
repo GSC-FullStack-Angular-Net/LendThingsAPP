@@ -16,29 +16,29 @@ namespace LendThingsAPI.Proto
             this.mapper = mapper;
         }
 
-        public override Task<EndLoanResponse> EndLoan(EndLoanRequest request, ServerCallContext context)
+        async public override Task<EndLoanResponse> EndLoan(EndLoanRequest request, ServerCallContext context)
         {
-            var loan = uow.LoanRepository.GetById(request.IdLoanToEnd);
+            var loan = await uow.LoanRepository.GetByIdAsync(request.IdLoanToEnd);
             if (loan is null)
             {
-                return Task.FromResult(new EndLoanResponse { Success = false, Message = $"The Loan with id {request.IdLoanToEnd} cannot be found." });
+                return await Task.FromResult(new EndLoanResponse { Success = false, Message = $"The Loan with id {request.IdLoanToEnd} cannot be found." });
             }
 
             if(loan.ReturnDate is not null)
             {
 
-                return Task.FromResult(new EndLoanResponse { Success = false, Message = $"The Loan with id {loan.Id} has been return on {loan.ReturnDate}" });
+                return await Task.FromResult(new EndLoanResponse { Success = false, Message = $"The Loan with id {loan.Id} has been return on {loan.ReturnDate}" });
             }
 
             loan.ReturnDate = DateTime.UtcNow;
-            uow.CompleteAsync();
+            await uow.CompleteAsync();
 
-            return Task.FromResult(new EndLoanResponse { Success=true, Message= $"The Loan of {loan.Thing.Description} to {loan.Person.Name} with id {loan.Id} made on {loan.Date} has been returned." });
+            return await Task.FromResult(new EndLoanResponse { Success=true, Message= $"The Loan of {loan.Thing.Description} to {loan.Person.Name} with id {loan.Id} made on {loan.Date} has been returned." });
         }
 
-        public override Task<GetAllLoansResponse> GetAllLoans(Empty request, ServerCallContext context)
+        async public override Task<GetAllLoansResponse> GetAllLoans(Empty request, ServerCallContext context)
         {
-            var loans = uow.LoanRepository.GetAll();
+            var loans = await uow.LoanRepository.GetAllAsync();
             IEnumerable<gPRCLoanFull> listgRPCLoans = loans.Select(l =>
             {
                 return new gPRCLoanFull
@@ -54,7 +54,7 @@ namespace LendThingsAPI.Proto
             var resp = new GetAllLoansResponse();
             resp.LoanList.AddRange(listgRPCLoans);
 
-            return Task.FromResult(resp);
+            return await Task.FromResult(resp);
         }
     }
 }

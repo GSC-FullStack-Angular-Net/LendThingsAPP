@@ -14,15 +14,15 @@ namespace LendThingsAPI.DataAccess
             dbSet = context.Set<TEntity>();
         }
 
-        public TEntity Add(TEntity entity)
+        async public Task<TEntity> AddAsync(TEntity entity)
         {
-            var savedEntity = dbSet.Add(entity);
+            var savedEntity = await dbSet.AddAsync(entity);
             return savedEntity.Entity;
         }
 
-        public bool Delete(int id)
+        async public Task<bool> DeleteAsync(int id)
         {
-            TEntity? result = dbSet.SingleOrDefault(x => x.Id == id);
+            TEntity? result = await dbSet.SingleOrDefaultAsync(x => x.Id == id);
             if (result !=null)
             {
                 dbSet.Remove(result);
@@ -31,14 +31,14 @@ namespace LendThingsAPI.DataAccess
             return false;
         }
 
-        public virtual List<TEntity> GetAll()
+        async public virtual Task<List<TEntity>> GetAllAsync()
         {
-            return dbSet.ToList(); 
+            return await dbSet.ToListAsync(); 
         }
 
-        public virtual TEntity GetById(int id)
+        async public virtual Task<TEntity> GetByIdAsync(int id)
         {
-            return dbSet.SingleOrDefault(t=>t.Id == id);
+            return await dbSet.SingleOrDefaultAsync(t => t.Id == id);
         }
 
         public TEntity Update(TEntity entity)

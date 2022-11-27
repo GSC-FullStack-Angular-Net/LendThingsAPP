@@ -23,9 +23,9 @@ namespace LendThingsAPI.Controllers
 
         [HttpGet()]
         [Route("")]
-        public IActionResult GetAll()
+        async public Task<IActionResult> GetAll()
         {
-            var existingThings = UoW.ThingRepository.GetAll();
+            var existingThings = await UoW.ThingRepository.GetAllAsync();
             if (existingThings is null)
             {
                 return NotFound();
@@ -36,9 +36,9 @@ namespace LendThingsAPI.Controllers
 
         [HttpGet()]
         [Route("{id}")]
-        public IActionResult GetOne(int id)
+        async public Task<IActionResult> GetOne(int id)
         {
-            var existingThing = UoW.ThingRepository.GetById(id);
+            var existingThing = await UoW.ThingRepository.GetByIdAsync(id);
             if (existingThing is null)
             {
                 return NotFound();
@@ -49,20 +49,20 @@ namespace LendThingsAPI.Controllers
 
         [HttpPost()]
         [Route("create")]
-        public IActionResult Create([FromBody] ThingForCreationDTO thingDTO)
+        async public Task<IActionResult> Create([FromBody] ThingForCreationDTO thingDTO)
         {
 
-            if (UoW.ThingRepository.GetAll().FirstOrDefault(t => t.Description == thingDTO.Description) is not null)
+            if ((await UoW.ThingRepository.GetAllAsync()).FirstOrDefault(t => t.Description == thingDTO.Description) is not null)
             {
                 return BadRequest($"The Thing: {thingDTO.Description} is created already.");
             }
 
             Thing newThing = Mapper.Map<Thing>(thingDTO);
 
-            newThing.Category = UoW.CategoryRepository.GetById(thingDTO.Category);
-            newThing = UoW.ThingRepository.Add(newThing);
+            newThing.Category = await UoW.CategoryRepository.GetByIdAsync(thingDTO.Category);
+            newThing = await UoW.ThingRepository.AddAsync(newThing);
 
-            UoW.CompleteAsync();
+            await UoW.CompleteAsync();
             
             var newThingDTO = Mapper.Map<ThingBaseDTO>(newThing);
 
@@ -71,23 +71,23 @@ namespace LendThingsAPI.Controllers
 
         [HttpPut()]
         [Route("{id}")]
-        public IActionResult Update(int id, ThingBaseDTO thingData)
+        async public Task<IActionResult> Update(int id, ThingBaseDTO thingData)
         {
-            var thingExisting = UoW.ThingRepository.GetById(id);
+            var thingExisting = await UoW.ThingRepository.GetByIdAsync(id);
             if (thingExisting is null)
             {
                 return NotFound();
             }
-            if (thingExisting.Description != thingData.Description && UoW.ThingRepository.GetAll().FirstOrDefault(t => t.Description == thingData.Description) is not null)
+            if (thingExisting.Description != thingData.Description && (await UoW.ThingRepository.GetAllAsync()).FirstOrDefault(t => t.Description == thingData.Description) is not null)
             {
                 return BadRequest($"The Thing: {thingData.Description} is created already.");
             }
             thingExisting.Description = thingData.Description;
-            var newCategoy = UoW.CategoryRepository.GetById(thingData.Category);
+            var newCategoy = await UoW.CategoryRepository.GetByIdAsync(thingData.Category);
             thingExisting.Category = newCategoy;
 
             var result = UoW.ThingRepository.Update(thingExisting);
-            UoW.CompleteAsync();
+            await UoW.CompleteAsync();
 
             var resultDTO = Mapper.Map<ThingBaseDTO>(result);
             return Ok(resultDTO);
@@ -95,14 +95,14 @@ namespace LendThingsAPI.Controllers
 
         [HttpPatch()]
         [Route("{id}")]
-        public IActionResult PartialUpdate(int id, ThingPartialUpdateDTO thingData)
+        async public Task<IActionResult> PartialUpdate(int id, ThingPartialUpdateDTO thingData)
         {
-            var thingExisting = UoW.ThingRepository.GetById(id);
+            var thingExisting = await UoW.ThingRepository.GetByIdAsync(id);
             if (thingExisting is null)
             {
                 return NotFound();
             }
-            if (thingExisting.Description != thingData.Description && UoW.ThingRepository.GetAll().FirstOrDefault(t => t.Description == thingData.Description) is not null)
+            if (thingExisting.Description != thingData.Description && (await UoW.ThingRepository.GetAllAsync()).FirstOrDefault(t => t.Description == thingData.Description) is not null)
             {
                 return BadRequest($"The Thing: {thingData.Description} is created already.");
             }
@@ -110,11 +110,11 @@ namespace LendThingsAPI.Controllers
             thingExisting.Description = thingData?.Description ?? thingExisting.Description;
             if(thingData!.Category is not null && thingExisting.Category.Id!=thingData.Category)
             {
-                var newCategory = UoW.CategoryRepository.GetById((int)thingData.Category);
+                var newCategory = await UoW.CategoryRepository.GetByIdAsync((int)thingData.Category);
                 thingExisting.Category = newCategory;
             }
 
-            UoW.CompleteAsync();
+            await UoW.CompleteAsync();
 
             var resultDTO = Mapper.Map<ThingBaseDTO>(thingExisting);
             return Ok(resultDTO);
@@ -122,13 +122,13 @@ namespace LendThingsAPI.Controllers
 
         [HttpDelete()]
         [Route("{id}")]
-        public IActionResult Delete(int id)
+        async public Task<IActionResult> Delete(int id)
         {
-            if (!UoW.ThingRepository.Delete(id))
+            if (! await UoW.ThingRepository.DeleteAsync(id))
             {
                 return NotFound();
             }
-            UoW.CompleteAsync();
+            await UoW.CompleteAsync();
 
             return Ok($"The Thing with id {id} has been deleted.");
         }

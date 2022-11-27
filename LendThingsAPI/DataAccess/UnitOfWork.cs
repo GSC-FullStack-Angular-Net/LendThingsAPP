@@ -23,9 +23,9 @@ namespace LendThingsAPI.DataAccess
         }
 
 
-        public int CompleteAsync()
+        async public Task<int> CompleteAsync()
         {
-            return context.SaveChanges();
+            return await context.SaveChangesAsync();
         }
     }
 }

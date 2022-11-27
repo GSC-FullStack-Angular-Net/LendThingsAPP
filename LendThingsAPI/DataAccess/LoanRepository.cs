@@ -9,14 +9,14 @@ namespace LendThingsAPI.DataAccess
         {
 
         }
-        public override List<Loan> GetAll()
+        async public override Task<List<Loan>> GetAllAsync()
         {
-            return dbSet.Include(l => l.Thing.Category).Include(l => l.Person).ToList();
+            return await dbSet.Include(l => l.Thing.Category).Include(l => l.Person).ToListAsync();
         }
 
-        public override Loan GetById(int id)
+        async public override Task<Loan> GetByIdAsync(int id)
         {
-            return dbSet.Include(l=>l.Thing).Include(l=>l.Person).SingleOrDefault(l=>l.Id == id);
+            return await dbSet.Include(l=>l.Thing).Include(l=>l.Person).SingleOrDefaultAsync(l=>l.Id == id);
         }
     }
 }

@@ -4,7 +4,7 @@ namespace LendThingsAPI.DataAccess
 {
     public interface IThingRepository:IBaseRepository<Thing>
     {
-        List<Thing> GetAll();
-        Thing GetById(int id);
+        Task<List<Thing>> GetAllAsync();
+        Task<Thing> GetByIdAsync(int id);
     }
 }

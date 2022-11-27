@@ -26,34 +26,34 @@ namespace LendThingsAPI.Controllers
 
         [HttpGet()]
         [Route("")]
-        public IActionResult GetAll()
+        async public Task<IActionResult> GetAll()
         {
-            var existingCategories = UoW.CategoryRepository.GetAll();
+            var existingCategories = await UoW.CategoryRepository.GetAllAsync();
             return Ok(existingCategories);
         }
 
         [HttpGet()]
         [Route("{id}")]
-        public IActionResult GetOne(int id)
+        async public Task<IActionResult> GetOne(int id)
         {
-            var existingCategory = UoW.CategoryRepository.GetById(id);
+            var existingCategory = await UoW.CategoryRepository.GetByIdAsync(id);
             return Ok(existingCategory);
         }
 
         [HttpPost()]
         [Route("create")]
-        public IActionResult Create([FromBody] CategoryForCreationDTO category)
+        async public Task<IActionResult> Create([FromBody] CategoryForCreationDTO category)
         {
 
-            if(UoW.CategoryRepository.GetAll().FirstOrDefault(c=>c.Description==category.Description) is not null)
+            if((await UoW.CategoryRepository.GetAllAsync()).FirstOrDefault(c=>c.Description==category.Description) is not null)
             {
                 return BadRequest($"The Category: {category.Description} is created already.");
             }
 
             Category newCategory = Mapper.Map<Category>(category);
-            newCategory = UoW.CategoryRepository.Add(newCategory);
+            newCategory = await UoW.CategoryRepository.AddAsync(newCategory);
 
-            UoW.CompleteAsync();
+            await UoW.CompleteAsync();
 
             return Created($"api/Category/{newCategory.Id}", newCategory);
         }

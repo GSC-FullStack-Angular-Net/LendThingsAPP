@@ -10,6 +10,6 @@ namespace LendThingsAPI.DataAccess
         IPersonRepository PersonRepository { get; }
         IThingRepository ThingRepository { get; }
 
-        int CompleteAsync();
+        Task<int> CompleteAsync();
     }
 }
