@@ -69,6 +69,11 @@ namespace LendThingsAPI.Controllers
             {
                 return NoContent();
             }
+            var personWithSameEmail = (await UoW.PersonRepository.GetAllAsync()).SingleOrDefault(p => p.Email == personData.Email);
+            if (personWithSameEmail is not null && personWithSameEmail.Id != id)
+            {
+                return BadRequest(new { errors = new { Email = new string[] { $"A Person with the email {personData.Email} is already created. Id={personWithSameEmail.Id}." } } });
+            }
 
             personExisting.PhoneNumber = personData.PhoneNumber;
             personExisting.Email=personData.Email;
@@ -89,7 +94,11 @@ namespace LendThingsAPI.Controllers
             {
                 return NoContent();
             }
-
+            var personWithSameEmail = (await UoW.PersonRepository.GetAllAsync()).SingleOrDefault(p => p.Email == personData.Email);
+            if (personWithSameEmail is not null && personWithSameEmail.Id != id)
+            {
+                return BadRequest(new { errors = new { Email = new string[] { $"A Person with the email {personData.Email} is already created. Id={personWithSameEmail.Id}." } } });
+            }
             personExisting.PhoneNumber = personData?.PhoneNumber ?? personExisting.PhoneNumber;
             personExisting.Email = personData?.Email ?? personExisting.Email;
             personExisting.Name = personData?.Name ?? personExisting.Name;
